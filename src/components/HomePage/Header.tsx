@@ -1,5 +1,6 @@
 'use client'
-import { styled } from 'styled-components'
+import { useState } from 'react'
+import styled from 'styled-components';
 
 import { FiSearch } from 'react-icons/fi'
 
@@ -25,7 +26,7 @@ const Header = styled.header`
         display: flex;
         flex-direction: column;
 
-        & > div {
+        & > div:last-child {
             height: 100%;
             display: flex;
             align-items: center;
@@ -81,8 +82,10 @@ const Header = styled.header`
     }
 `
 
+const Index = ({ SearchCallback }: { SearchCallback: (search: string) => void }) => {
 
-const Index = () => {
+    const [search, setSearch] = useState<string>('');
+
     return (
         <Header>
             <img src={'https://images.pexels.com/photos/2310641/pexels-photo-2310641.jpeg'} alt="Background image" />
@@ -92,8 +95,11 @@ const Index = () => {
                     <Container>
                         <div>
                             <h1>The combination of what you already love.</h1>
-                            <form>
-                                <input className='search' placeholder='Search' type='text' />
+                            <form onSubmit={(evt) => {
+                                evt.preventDefault()
+                                SearchCallback(search);
+                            }}>
+                                <input onChange={evt => setSearch(evt.currentTarget.value)} className='search' placeholder='Search' type='text' />
                                 <button className='send' type='submit'><FiSearch /></button>
                             </form>
                         </div>

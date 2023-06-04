@@ -13,19 +13,22 @@
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
     "axios": "^1.4.0",
-    "eslint": "8.41.0",
-    "eslint-config-next": "13.4.3",
     "next": "13.4.3",
+    "next-auth": "^4.22.1",
     "pg": "^8.11.0",
     "pg-hstore": "^2.3.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.8.0",
     "sequelize": "^6.31.1",
-    "styled-components": "^6.0.0-rc.2",
+    "styled-components": "^5.3.11",
     "typescript": "5.0.4"
   },
   "devDependencies": {
+    "@types/styled-components": "^5.1.26",
+    "babel-plugin-styled-components": "^2.0.6",
+    "eslint": "8.41.0",
+    "eslint-config-next": "13.4.3",
     "sequelize-cli": "^6.6.0"
   }
 }

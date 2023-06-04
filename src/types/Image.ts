@@ -11,7 +11,11 @@ type Image = {
         profilePicture: string,
         userLink: string
     },
-    provider: string
+    provider: {
+        name: string,
+        URL: string,
+        providerPicture: string,
+    }
 }
 
 export default Image
