@@ -1,6 +1,5 @@
 'use client'
 import styled from 'styled-components'
-import Outclick from './Outclick'
 
 const OpaqueBackground = styled.div`
     position: fixed;
@@ -14,12 +13,10 @@ const OpaqueBackground = styled.div`
     overflow-y: auto;
 `
 
-const Index = ({ opened, children, OutclickCallback }: { opened: boolean, children: React.ReactNode, OutclickCallback: () => void }) => {
+const Index = ({ opened, children }: { opened: boolean, children: React.ReactNode }) => {
     return opened ?
         <OpaqueBackground>
-            <Outclick Callback={OutclickCallback}>
-                {children}
-            </Outclick>
+            {children}
         </OpaqueBackground>
         : <></>
 }

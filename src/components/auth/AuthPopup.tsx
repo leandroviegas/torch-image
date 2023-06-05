@@ -4,6 +4,7 @@ import { FcGoogle } from 'react-icons/fc';
 import { signIn } from "next-auth/react"
 import SignInForm from '@/components/auth/SignInForm';
 import SignUpForm from '@/components/auth/SignUpForm';
+import useOutsideClick from '@/hooks/useOutsideClick';
 
 const AuthPopup = styled.div`
     width: 100vw;
@@ -95,9 +96,11 @@ const AuthPopup = styled.div`
     }
 `
 
-const Index = ({ ChangePopup, popup }: { ChangePopup: (newPopup: string) => void, popup: string }) => {
+const Index = ({ ChangePopup, popup, onOutsideClick }: { ChangePopup: (newPopup: string) => void, popup: string, onOutsideClick: () => void }) => {
+    const [authProviderRef] = useOutsideClick(onOutsideClick);
+
     return (
-        <AuthPopup>
+        <AuthPopup ref={authProviderRef}>
             <div className='tab-buttons'>
                 <button className={`${popup == "SignIn" && 'active'}`} onClick={() => ChangePopup("SignIn")}>Sign In</button>
                 <button className={`${popup == "SignUp" && 'active'}`} onClick={() => ChangePopup("SignUp")}>Sign Up</button>

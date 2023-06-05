@@ -12,7 +12,7 @@ import { useSession } from "next-auth/react";
 import OpaqueBackground from "@/components/OpaqueBackground";
 import Container from '@/components/Container';
 import AuthPopup from '@/components/auth/AuthPopup';
-import Outclick from '../Outclick';
+import useOutsideClick from '@/hooks/useOutsideClick';
 
 const Navbar = styled.nav`
     padding: 30px 0;
@@ -102,14 +102,16 @@ const Index = () => {
 
     const [dropdowns, setDropdowns] = useState<{ [key: string]: boolean }>({ user: false });
 
+    const [dropdownRef] = useOutsideClick(() => setDropdowns({ ...dropdowns, user: false }));
+
     useEffect(() => {
         document.body.style.overflowY = popup !== "" ? "hidden" : "auto";
     }, [popup])
 
     return (
         <>
-            <OpaqueBackground opened={popup !== ""} OutclickCallback={() => setPopup("")}>
-                <AuthPopup ChangePopup={setPopup} popup={popup} />
+            <OpaqueBackground opened={popup !== ""}>
+                <AuthPopup ChangePopup={setPopup} popup={popup} onOutsideClick={() => setPopup("")} />
             </OpaqueBackground>
             <Navbar>
                 <Container>
@@ -132,14 +134,12 @@ const Index = () => {
                                     </li>
                                 </> :
                                 <>
-                                    <li onClick={() => setDropdowns({ ...dropdowns, user: true })}>
+                                    <li ref={dropdownRef} onClick={() => setDropdowns({ ...dropdowns, user: true })}>
                                         <span>{session?.user?.name} <TiArrowSortedDown /></span>
                                         {dropdowns["user"] &&
-                                            <Outclick Callback={() => setDropdowns({ ...dropdowns, user: false })}>
-                                                <div className='dropdown-menu'>
-                                                    <button onClick={() => signOut()} className='item'>Sign Out</button>
-                                                </div>
-                                            </Outclick>
+                                            <div className='dropdown-menu'>
+                                                <button onClick={() => signOut()} className='item'>Sign Out</button>
+                                            </div>
                                         }
                                     </li>
                                 </>
