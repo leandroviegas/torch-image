@@ -3,11 +3,13 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { signOut } from "next-auth/react"
+import { useSession } from "next-auth/react";
+
 import styled from 'styled-components';
 
 import { TiArrowSortedDown } from 'react-icons/ti';
 
-import { useSession } from "next-auth/react";
+import FlameImage from '@/images/Flame.svg'
 
 import OpaqueBackground from "@/components/OpaqueBackground";
 import Container from '@/components/Container';
@@ -116,7 +118,7 @@ const Index = () => {
             <Navbar>
                 <Container>
                     <div className='logo'>
-                        <Image width={40} height={40} src="/flame.svg" alt="Torch-Image logo" />
+                        <Image width={40} height={40} src={FlameImage} alt="Torch-Image logo" />
                     </div>
                     <div>
                         <ul className='nav-list'>

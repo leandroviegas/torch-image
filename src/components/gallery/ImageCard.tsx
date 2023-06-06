@@ -4,7 +4,8 @@ import styled from 'styled-components'
 import { HiCollection } from 'react-icons/hi'
 import { MdThumbUpAlt } from 'react-icons/md'
 
-import Image from '@/types/Image'
+import ImageType from '@/types/Image'
+import Image from 'next/image'
 
 const ImageCard = styled.div`
     box-shadow: 0px 4px 4px #44444416;
@@ -140,14 +141,14 @@ const ImageCard = styled.div`
     }
 `
 
-const Index = ({ previewLink, owner, provider }: Image) => {
+const Index = ({ previewLink, owner, provider }: ImageType) => {
     return (
         <ImageCard>
             <div className='image'>
                 <div className='info-card'>
                     <div className='user-info'>
                         <a href={owner.userLink} target='_blank'>
-                            <img src={owner.profilePicture} alt={owner.username} />
+                            <Image width={30} height={30} src={owner.profilePicture} alt={owner.username} />
                             <span>{owner.username}</span>
                         </a>
                     </div>
@@ -162,7 +163,7 @@ const Index = ({ previewLink, owner, provider }: Image) => {
                 <div className="provider">
                     <a href={provider.URL} target='_blank'>
                         <span>{provider.name}</span>
-                        <img src={provider.providerPicture} alt={provider.name} />
+                        <Image width={25} height={25} src={provider.providerPicture} alt={provider.name} />
                     </a>
                 </div>
             </div>

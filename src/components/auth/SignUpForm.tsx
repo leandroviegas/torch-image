@@ -1,6 +1,7 @@
 'use client'
 import styled from 'styled-components'
 import FloatingLabelInput from '@/components/FloatingLabelInput';
+import { signIn } from 'next-auth/react';
 
 const SignUp = styled.form`
     display: flex;
@@ -23,13 +24,18 @@ const SignUp = styled.form`
 `
 
 const Index = () => {
+    const HandleSignUp = (event: React.FormEvent) => {
+        event.preventDefault();
+        // signIn("credentials", { username: "", email: "", password: "" })
+    }
+
     return (
-        <SignUp>
+        <SignUp onSubmit={HandleSignUp}>
             <FloatingLabelInput label='Username' status={"error"} />
             <FloatingLabelInput label='Email' status={"error"} />
             <FloatingLabelInput label='Password' type='password' status={"error"} />
-            <hr />
-            <button className='SignUp'>SignUp</button>
+            {/* <hr /> */}
+            <button className='SignUp'>Sign Up</button>
         </SignUp>
     )
 }
