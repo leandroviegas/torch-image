@@ -89,7 +89,8 @@ const Navbar = styled.nav`
             font-size: 12px;
             padding: 7px 12px;
             color: #818181;
-
+            white-space: nowrap;
+            
             &:hover {
                 color: #2a2a2a;
             }

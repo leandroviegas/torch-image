@@ -1,8 +1,10 @@
-import { DataTypes, Model } from 'sequelize';
+'use restrict'
+import Sequelize, { DataTypes, Model } from 'sequelize';
 import sequelize from '../database';
 
 // Models
 import User from './User';
+import Collection from './Collection';
 
 class Image extends Model { }
 
@@ -12,7 +14,8 @@ Image.init(
         id: {
             type: DataTypes.UUID,
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            defaultValue: Sequelize.UUIDV4
         },
         name: {
             type: DataTypes.STRING,
@@ -64,6 +67,20 @@ Image.init(
     }
 );
 
-Image.hasMany(User)
+Image.hasMany(
+    User,
+    {
+        as: 'like_list',
+        foreignKey: 'likes'
+    }
+)
+
+Image.belongsTo(
+    Collection,
+    {
+        as: 'image_list',
+        foreignKey: 'images'
+    }
+)
 
 export default Image;

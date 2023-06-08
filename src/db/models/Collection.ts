@@ -1,5 +1,5 @@
 'use restrict'
-import { DataTypes, Model } from 'sequelize';
+import Sequelize, { DataTypes, Model } from 'sequelize';
 import sequelize from '../database';
 
 // Models
@@ -14,7 +14,8 @@ Collection.init(
         id: {
             type: DataTypes.UUID,
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            defaultValue: Sequelize.UUIDV4
         },
         name: {
             type: DataTypes.STRING,
@@ -54,7 +55,28 @@ Collection.init(
     }
 );
 
-Collection.hasMany(User)
-Collection.belongsTo(User)
+Collection.belongsTo(
+    User,
+    {
+        as: 'owner',
+        foreignKey: 'owner'
+    }    
+)
+
+Collection.hasMany(
+    User,
+    {
+        as: 'likes',
+        foreignKey: 'likes'
+    }
+)
+
+Collection.hasMany(
+    Image,
+    {
+        as: 'image_list',
+        foreignKey: 'images'
+    }
+)
 
 export default Collection;

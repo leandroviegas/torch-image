@@ -120,8 +120,8 @@ const Index = ({ ChangePopup, popup, onOutsideClick }: { ChangePopup: (newPopup:
             </div>
             <div>
                 {popup == "SignIn"
-                    ? <SignInForm />
-                    : <SignUpForm />}
+                    ? <SignInForm ClosePopup={onOutsideClick} />
+                    : <SignUpForm ClosePopup={onOutsideClick} />}
             </div>
         </AuthPopup>
     )

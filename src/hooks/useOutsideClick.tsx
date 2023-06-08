@@ -1,7 +1,7 @@
 
 import { useEffect, useRef } from "react";
 
-const useOutsideClick = (callback: () => void) => {
+function useOutsideClick<T>(callback: () => void) {
     const ref = useRef<any>();
 
     const handleClick = (e: any) => {
