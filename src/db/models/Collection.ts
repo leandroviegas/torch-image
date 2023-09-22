@@ -50,8 +50,10 @@ Collection.init(
     {
         sequelize,
         modelName: 'Collection',
+        tableName: 'collections',
         createdAt: true,
-        updatedAt: 'updateTimestamp'
+        updatedAt: 'updateTimestamp',
+        freezeTableName: true,
     }
 );
 

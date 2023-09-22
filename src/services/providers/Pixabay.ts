@@ -34,7 +34,7 @@ const imageDataPatternize = (hit: any): Image => {
 }
 
 async function PixabaySearch({ query, perPage = 20, page = 1 }: { query: string, perPage?: number, page?: number }) {
-    let images: Image[] = await pixabayApi.get('', { params: { key: process.env.PIXABAY_API_KEY, q: query, per_page: perPage, page } })
+    let images: Image[] = await pixabayApi.get('', { params: { key: process.env.PIXABAY_API_KEY, safesearch: true, q: query, per_page: perPage, page } })
         .then(response => response.data.hits.map(imageDataPatternize))
         .catch((error) => {
             console.error(error)

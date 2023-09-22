@@ -49,9 +49,7 @@ const Index = ({ images }: { images: Image[] }) => {
         }
 
         images.forEach(image => {
-            const lowestHeight = Math.min(...columns.map(column => column.colHeight));
-
-            const lowestIndex = columns.findIndex(column => column.colHeight == lowestHeight);
+            const lowestIndex = columns.findIndex(column => column.colHeight == Math.min(...columns.map(column => column.colHeight)));
 
             columns[lowestIndex] = { colHeight: columns[lowestIndex].colHeight + (image.imageHeight / image.imageWidth), images: [...columns[lowestIndex].images, image] };
         })

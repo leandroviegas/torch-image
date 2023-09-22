@@ -1,19 +1,21 @@
 'use client'
 import styled from 'styled-components'
 import FloatingLabelInput from '@/components/FloatingLabelInput';
+import { useState } from 'react';
+import api from '@/services/api';
 import { signIn } from 'next-auth/react';
-import useForm from '@/hooks/useForm';
 
 const SignIn = styled.form`
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 15px;
 
     hr {
         border-top: 1px solid #e3e3e3;
     }
 
     button.SignIn {
+        margin-top: 30px;
         padding: 20px 0;
         font-size: 15px;
         font-weight: 600;
@@ -25,17 +27,19 @@ const SignIn = styled.form`
 `
 
 const Index = ({ ClosePopup }: { ClosePopup: () => void }) => {
-    const [form, setForm] = useForm<{ usernameOrEmail: string, password: string }>({ usernameOrEmail: "", password: "" })
+    
+    const [ form, setForm ] = useState<{ usernameOrEmail: string, password: string }>({ usernameOrEmail: "", password: "" });
 
-    const HandleSignIn = (event: React.FormEvent) => {
+    function HandleSignIn(event: React.FormEvent) {
         event.preventDefault();
         signIn("credentials", { ...form, redirect: false }).then(ClosePopup).catch(console.error)
+        ClosePopup();
     }
 
     return (
         <SignIn onSubmit={HandleSignIn}>
-            <FloatingLabelInput label='Username or email' status={"error"} />
-            <FloatingLabelInput label='Password' type='password' onChange={e => setForm({ ...form, password: e.currentTarget.value })} status={"error"} />
+            <FloatingLabelInput onChange={e => setForm({...form, usernameOrEmail: e.currentTarget.value })} name='usernameOrEmail' label='Username or email' status={"error"} />
+            <FloatingLabelInput onChange={e => setForm({...form, password: e.currentTarget.value })} name='password' label='Password' type='password' status={"error"} />
             {/* <hr /> */}
             <button className='SignIn'>Sign In</button>
         </SignIn>

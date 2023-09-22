@@ -13,7 +13,7 @@ import FlameImage from '@/images/Flame.svg'
 
 import OpaqueBackground from "@/components/OpaqueBackground";
 import Container from '@/components/Container';
-import AuthPopup from '@/components/auth/AuthPopup';
+import AuthPopup from '@/components/Navbar/AuthPopup';
 import useOutsideClick from '@/hooks/useOutsideClick';
 
 const Navbar = styled.nav`
@@ -50,6 +50,9 @@ const Navbar = styled.nav`
         
         li {
             align-self: center;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             position: relative;
         }
 
@@ -75,6 +78,12 @@ const Navbar = styled.nav`
             border: none;
             border-radius:7px;
         } 
+
+        .profilePicture {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
     }
 
     .dropdown-menu {
@@ -138,12 +147,14 @@ const Index = () => {
                                 </> :
                                 <>
                                     <li ref={dropdownRef} onClick={() => setDropdowns({ ...dropdowns, user: true })}>
-                                        <span>{session?.user?.name} <TiArrowSortedDown /></span>
-                                        {dropdowns["user"] &&
-                                            <div className='dropdown-menu'>
-                                                <button onClick={() => signOut()} className='item'>Sign Out</button>
-                                            </div>
-                                        }
+                                        <img className='profilePicture' src={session?.user?.profilePicture || ""} alt={session?.user?.username || " profile picture"} />
+                                        <span>{session?.user?.username} <TiArrowSortedDown />
+                                            {dropdowns["user"] &&
+                                                <div className='dropdown-menu'>
+                                                    <button onClick={() => signOut()} className='item'>Sign Out</button>
+                                                </div>}
+                                        </span>
+
                                     </li>
                                 </>
                             }

@@ -2,8 +2,8 @@
 import styled from 'styled-components';
 import { FcGoogle } from 'react-icons/fc';
 import { signIn } from "next-auth/react"
-import SignInForm from '@/components/auth/SignInForm';
-import SignUpForm from '@/components/auth/SignUpForm';
+import SignInForm from '@/components/Navbar/Forms/SignIn';
+import SignUpForm from '@/components/Navbar/Forms/SignUp';
 import useOutsideClick from '@/hooks/useOutsideClick';
 
 const AuthPopup = styled.div`

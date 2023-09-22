@@ -33,10 +33,12 @@ export default catchAsyncErrors(async (req: NextApiRequest, res: NextApiResponse
                     name: user.username,
                     email: user.email,
                 });
+            } else {
+                res.status(400).json({ message: 'invalid-credentials' });
             }
 
             break;
         default:
-            res.status(400).json({ message: 'invalid method.' });
+            res.status(400).json({ message: 'invalid method' });
     }
 })

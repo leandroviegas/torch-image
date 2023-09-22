@@ -1,4 +1,5 @@
 'use client'
+import { ChangeEventHandler } from 'react'
 import styled from 'styled-components'
 
 const FloatingLabelInput = styled.div`
@@ -59,13 +60,20 @@ const FloatingLabelInput = styled.div`
         -webkit-transition: all .3s ease-out;
         -moz-transition: all .3s ease-out;
     }
+
+    span {
+        display: block;
+        font-size: 12px;
+        color: #707070;
+        margin: 5px 0;
+    }
 `
 type ValueType = string | number | readonly string[] | undefined
 
 type InputProperties = {
-    status: "error" | "info",
+    status: "error" | "ok",
     messages?: string[],
-    onChange?: React.ChangeEventHandler<HTMLSelectElement | HTMLTextAreaElement | HTMLInputElement> | undefined,
+    onChange?: ChangeEventHandler<HTMLInputElement> | undefined,
     defaultValue?: ValueType,
     value?: ValueType,
     name?: string,
@@ -75,12 +83,15 @@ type InputProperties = {
     children?: React.ReactNode
 }
 
-const Index = ({ status, label, type, name, value, defaultValue, onChange }: InputProperties) => {
+const Index = ({ status, label, type, name, value, defaultValue, messages, onChange }: InputProperties) => {
     return (
-        <FloatingLabelInput>
-            <input {...{ type, name, value, defaultValue, onChange }} placeholder=" " />
-            <label htmlFor=''>{label}</label>
-        </FloatingLabelInput>
+        <>
+            <FloatingLabelInput>
+                <input {...{ type, name, value, defaultValue, onChange }} placeholder=" " />
+                <label htmlFor=''>{label}</label>
+                {messages?.map(message => <span key={message}>* {message}</span>)}
+            </FloatingLabelInput>
+        </>
     )
 }
 

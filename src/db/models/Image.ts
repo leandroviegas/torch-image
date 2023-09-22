@@ -62,8 +62,10 @@ Image.init(
     {
         sequelize,
         modelName: 'Image',
+        tableName: 'images',
         createdAt: true,
-        updatedAt: 'updateTimestamp'
+        updatedAt: 'updateTimestamp',
+        freezeTableName: true,
     }
 );
 
@@ -72,14 +74,6 @@ Image.hasMany(
     {
         as: 'like_list',
         foreignKey: 'likes'
-    }
-)
-
-Image.belongsTo(
-    Collection,
-    {
-        as: 'image_list',
-        foreignKey: 'images'
     }
 )
 
