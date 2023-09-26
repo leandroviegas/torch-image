@@ -6,6 +6,8 @@ import { MdThumbUpAlt } from 'react-icons/md'
 
 import ImageType from '@/types/Image'
 import Image from 'next/image'
+import { useSession } from 'next-auth/react'
+import api from '@/services/api'
 
 const ImageCard = styled.div`
     box-shadow: 0px 4px 4px #44444416;
@@ -141,7 +143,15 @@ const ImageCard = styled.div`
     }
 `
 
-const Index = ({ previewLink, owner, provider }: ImageType) => {
+const Index = ({ previewLink, owner, provider, likes, sourceId }: ImageType) => {
+    const { data: session } = useSession()
+
+    function Like() {
+        api.put('/image/like', { identification: sourceId, provider: provider.name }).then(response => {
+            
+        }).catch(console.error)
+    }
+
     return (
         <ImageCard>
             <div className='image'>
@@ -158,7 +168,7 @@ const Index = ({ previewLink, owner, provider }: ImageType) => {
             <div className='footer'>
                 <div className='buttons'>
                     <button><HiCollection /></button>
-                    <button><MdThumbUpAlt /></button>
+                    <button onClick={Like} className={likes.includes(session?.user?.id || '') ? 'selected' : ''}><MdThumbUpAlt /></button>
                 </div>
                 <div className="provider">
                     <a href={provider.URL} target='_blank'>

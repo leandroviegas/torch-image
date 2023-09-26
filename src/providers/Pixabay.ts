@@ -2,7 +2,7 @@ import axios from 'axios'
 import Providers from './providers.info.json'
 import Image from '@/types/Image';
 
-const pixabay = Providers.find(provider => provider.id === "Pixabay");
+const pixabay = Providers["pixabay"];
 
 if (!pixabay) throw new Error("Pixabay informations not found");
 
@@ -13,12 +13,13 @@ const pixabayApi = axios.create({
 const imageDataPatternize = (hit: any): Image => {
     return {
         name: "",
-        sorceId: hit.id,
+        sourceId: hit.id,
         sourceImageURL: hit.pageURL,
         imageLink: hit.largeImageURL,
         previewLink: hit.webformatURL,
         imageWidth: hit.imageWidth,
         imageHeight: hit.imageHeight,
+        likes: [],
         owner: {
             username: hit.user,
             profilePicture: hit.userImageURL,
@@ -39,7 +40,6 @@ async function PixabaySearch({ query, perPage = 20, page = 1 }: { query: string,
         .catch((error) => {
             console.error(error)
         })
-
     return images;
 }
 

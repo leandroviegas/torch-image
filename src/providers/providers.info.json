@@ -1,9 +1,8 @@
-[
-    {
-        "id": "Pixabay",
+{
+    "pixabay": {
         "name": "Pixabay",
         "URL": "https://pixabay.com",
         "providerPicture": "https://pixabay.com/favicon-32x32.png",
         "APIURL": "https://pixabay.com/api"
     }
-]
+}

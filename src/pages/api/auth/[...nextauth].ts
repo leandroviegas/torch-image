@@ -38,6 +38,7 @@ export const authOptions: NextAuthOptions = {
       return {
         ...session,
         user: {
+          id: token.id,
           username: token.username,
           email: token.email,
           role: token.role,
@@ -51,7 +52,7 @@ export const authOptions: NextAuthOptions = {
         let userQuery = await User.findOne({ where: { email: profile?.email } })
 
         if (!userQuery)
-        userQuery = await User.create({
+          userQuery = await User.create({
             username: user?.name,
             email: user?.email,
             profilePicture: user?.image,
@@ -59,6 +60,7 @@ export const authOptions: NextAuthOptions = {
             link: linkfy(user?.name || "")
           })
 
+        token.id = userQuery.id;
         token.username = userQuery.username;
         token.email = userQuery.email;
         token.role = userQuery.role;

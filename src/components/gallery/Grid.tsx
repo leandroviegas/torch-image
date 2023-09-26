@@ -1,9 +1,11 @@
 'use client'
+import { useState, useEffect } from 'react';
 
 import styled from 'styled-components'
 
-import Image from "@/types/Image";
 import ImageCard from './ImageCard';
+
+import Image from "@/types/Image";
 
 const GridGallery = styled.div`
     margin: 30px auto;
@@ -37,6 +39,12 @@ export type ImagesGrid = {
 }
 
 const Index = ({ images }: { images: Image[] }) => {
+    const [imagesInGrid, setImagesInGrid] = useState<Image[]>(images);
+
+    useEffect(()=> {
+        setImagesInGrid(images)
+    }, [images])
+
     function SeparateImagesInGrid({ images, cols }: { images: Image[], cols: number }) {
         let columns: ImagesGrid[] = [];
 
@@ -60,13 +68,16 @@ const Index = ({ images }: { images: Image[] }) => {
     return (
         <GridGallery>
             {
-                SeparateImagesInGrid({ images, cols: 4 }).map(column => {
+                SeparateImagesInGrid({ images: imagesInGrid, cols: 4 }).map(column => {
                     return (
                         <div key={Math.random()} className="column">
                             {
                                 column.images.map(image => {
                                     return (
-                                        <ImageCard {...image} key={image.sorceId + image.provider} />
+                                        <ImageCard
+                                            key={image.sourceId + image.provider}
+                                            {...image}
+                                        />
                                     )
                                 })
                             }

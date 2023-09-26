@@ -4,9 +4,13 @@ import sequelize from '../database';
 
 // Models
 import User from './User';
-import Collection from './Collection';
 
-class Image extends Model { }
+class Image extends Model {
+    declare id: string;
+    declare identification: string;
+    declare likes: string[];
+    declare provider: string;
+}
 
 Image.init(
     // Model attributes
@@ -17,42 +21,17 @@ Image.init(
             primaryKey: true,
             defaultValue: Sequelize.UUIDV4
         },
-        name: {
-            type: DataTypes.STRING,
-        },
-        sourceId: {
-            type: DataTypes.STRING,
-        },
-        sourceImageURL: {
-            type: DataTypes.STRING,
-        },
-        imageLink: {
+        identification: {
             type: DataTypes.STRING,
             allowNull: false,
-        },
-        previewLink: {
-            type: DataTypes.STRING,
-        },
-        imageWidth: {
-            type: DataTypes.NUMBER,
-        },
-        imageHeight: {
-            type: DataTypes.NUMBER,
-        },
-        owner: {
-            // {
-            //     profilePicture: string;
-            //     username: string;
-            //     userLink: string;
-            // }
-            type: DataTypes.JSON,
         },
         likes: {
             type: DataTypes.ARRAY(DataTypes.UUID),
             references: {
                 model: User,
                 key: 'id'
-            }
+            },
+            defaultValue: [],
         },
         provider: {
             type: DataTypes.STRING,
