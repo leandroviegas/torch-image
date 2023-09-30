@@ -5,7 +5,7 @@ import styled from 'styled-components'
 
 import ImageCard from './ImageCard';
 
-import Image from "@/types/Image";
+import Image, { Like } from "@/types/Image";
 
 const GridGallery = styled.div`
     margin: 30px auto;
@@ -41,9 +41,13 @@ export type ImagesGrid = {
 const Index = ({ images }: { images: Image[] }) => {
     const [imagesInGrid, setImagesInGrid] = useState<Image[]>(images);
 
-    useEffect(()=> {
+    useEffect(() => {
         setImagesInGrid(images)
     }, [images])
+
+    function ChangeLikes(likes: Like[], sourceId: string, provider: string) {
+        setImagesInGrid(imagesInGrid.map(imageInGrid => `${sourceId}-${provider}` == `${imageInGrid.sourceId}-${imageInGrid.provider.name}` ? { ...imageInGrid, likes } : imageInGrid))
+    }
 
     function SeparateImagesInGrid({ images, cols }: { images: Image[], cols: number }) {
         let columns: ImagesGrid[] = [];
@@ -57,14 +61,13 @@ const Index = ({ images }: { images: Image[] }) => {
         }
 
         images.forEach(image => {
-            const lowestIndex = columns.findIndex(column => column.colHeight == Math.min(...columns.map(column => column.colHeight)));
-
+            const lowestIndex = columns.findIndex(column => column.colHeight == Math.min(...columns.map(column => column.colHeight)))
             columns[lowestIndex] = { colHeight: columns[lowestIndex].colHeight + (image.imageHeight / image.imageWidth), images: [...columns[lowestIndex].images, image] };
         })
 
         return columns;
     }
-
+    
     return (
         <GridGallery>
             {
@@ -76,6 +79,7 @@ const Index = ({ images }: { images: Image[] }) => {
                                     return (
                                         <ImageCard
                                             key={image.sourceId + image.provider}
+                                            ChangeLikes={ChangeLikes}
                                             {...image}
                                         />
                                     )

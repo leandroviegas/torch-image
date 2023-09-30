@@ -1,22 +1,24 @@
-type Image = {
-    name: string,
-    sourceId: string,
-    sourceImageURL: string,
-    imageLink: string,
-    previewLink: string,
-    imageWidth: number,
-    imageHeight: number,
-    likes: string[],
-    owner: {
-        username: string,
-        profilePicture: string,
-        userLink: string
-    },
-    provider: {
-        name: string,
-        URL: string,
-        providerPicture: string,
-    }
-}
+export type Like =  { UserId: string; username: string; profilePicture: string }
 
-export default Image
+type Image = {
+  name: string;
+  sourceId: string;
+  sourceImageURL: string;
+  imageLink: string;
+  previewLink: string;
+  imageWidth: number;
+  imageHeight: number;
+  likes: Like[];
+  owner: {
+    username: string;
+    profilePicture: string;
+    userLink: string;
+  };
+  provider: {
+    name: string;
+    URL: string;
+    providerPicture: string;
+  };
+};
+
+export default Image;

@@ -118,7 +118,7 @@ export default function Home() {
       <Header>
         <img src={'https://images.pexels.com/photos/2310641/pexels-photo-2310641.jpeg'} alt="Background image" />
         <div className='content'>
-          <Navbar />
+          <Navbar isIndex={true} />
           <div>
             <Container>
               <div>

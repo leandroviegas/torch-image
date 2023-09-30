@@ -20,8 +20,9 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 
 ## Features
 
-[ ] - Create account(Inputs)
-[ ] - Google Sign
+[x] - Create account(Inputs)
+[x] - Google Sign
+[ ] - Dark Mode
 [ ] - Index image list
 [ ] - Search for images (list collections)
 [ ] - Save image in collections
