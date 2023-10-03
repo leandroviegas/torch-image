@@ -8,7 +8,7 @@ const OpaqueBackground = styled.div`
     top: 0;
     left: 0;
     z-index: 200;
-    background-color: #0000005a;
+    background-color: #0000007d;
     backdrop-filter: blur(3px);
     overflow-y: auto;
 `

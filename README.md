@@ -22,8 +22,9 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 
 [x] - Create account(Inputs)
 [x] - Google Sign
+[x] - Like image
 [ ] - Dark Mode
+[ ] - Image Details
 [ ] - Index image list
 [ ] - Search for images (list collections)
-[ ] - Save image in collections
-[ ] - Like image
+[ ] - Save image to collections

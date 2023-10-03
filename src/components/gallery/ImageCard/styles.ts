@@ -1,24 +1,5 @@
 import styled from "styled-components";
 
-interface ImageCardThemeType {
-  bgColor: string;
-  borderWidth: string;
-  button: {
-    color: string;
-    hover: {
-      color: string;
-      borderColor: string;
-    };
-  };
-}
-
-interface ImageCardProps {
-  theme: {
-    light: ImageCardThemeType;
-    dark: ImageCardThemeType;
-  };
-}
-
 export const ThemeStyles = {
   light: {
     bgColor: "#00000000",
@@ -43,7 +24,7 @@ export const ThemeStyles = {
     button: {
       color: "#f1f1f1",
       hover: {
-        color: "#b0b0b0",
+        color: "#b0b0b0", 
         borderColor: "#aaaaaa",
       },
     },
@@ -56,7 +37,7 @@ export const ThemeStyles = {
   },
 };
 
-export const ImageCard = styled.div<ImageCardProps>`
+export const ImageCard = styled.div`
   background: ${({ theme }) => theme.bgColor};
   box-shadow: 0px 4px 4px #44444416;
   border-bottom: ${({ theme }) => theme.borderWidth} solid #f1f1f1;

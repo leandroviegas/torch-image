@@ -9,6 +9,8 @@ import catchAsyncErrors from "@/middlewares/ErrorHandler";
 import Image from "@/db/models/Image";
 import User from "@/db/models/User";
 
+import { SeedStringRandomizer } from "@/utils/seedRandom";
+
 type SearchResult = {
   query: string;
   images: ImageT[];
@@ -45,7 +47,7 @@ export default catchAsyncErrors(
         },
       });
 
-      const newimages = images.map((image) => {
+      let newimages = images.map((image) => {
         let imageInfo = imagesInfo.find(
           (imgInfo) =>
             imgInfo.identification == `${image.sourceId}-${image.provider.name}`
@@ -62,6 +64,12 @@ export default catchAsyncErrors(
               })),
           };
         return image;
+      });
+
+      newimages.sort((a, b) => {
+        return (
+          SeedStringRandomizer(a.sourceId) - SeedStringRandomizer(b.sourceId)
+        );
       });
 
       res.status(200).json({ query, perPage, page, images: newimages });

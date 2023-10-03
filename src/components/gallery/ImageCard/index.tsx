@@ -11,6 +11,7 @@ import ImageType, { Like } from "@/types/Image";
 import Image from "next/image";
 
 import { ImageCard, ThemeStyles } from "./styles";
+import useAuth from "@/hooks/useAuth";
 
 const Index = ({
   previewLink,
@@ -24,6 +25,7 @@ const Index = ({
 }) => {
   const { data: session } = useSession();
   const { theme } = useTheme();
+  const { setPopup } = useAuth();
 
   async function Like() {
     let lastLikes = likes;
@@ -48,19 +50,24 @@ const Index = ({
           sourceId,
           provider.name
         );
-    }
 
-    await api
-      .put("/image/like", { identification: sourceId, provider: provider.name })
-      .then((res) => {
-        lastLikes = res.data.image.likes;
-      })
-      .catch((e) => {
-        console.error(e);
-      })
-      .finally(() => {
-        ChangeLikes(lastLikes, sourceId, provider.name);
-      });
+      await api
+        .put("/image/like", {
+          identification: sourceId,
+          provider: provider.name,
+        })
+        .then((res) => {
+          lastLikes = res.data.image.likes;
+        })
+        .catch((e) => {
+          console.error(e);
+        })
+        .finally(() => {
+          ChangeLikes(lastLikes, sourceId, provider.name);
+        });
+    } else {
+      setPopup("SignIn");
+    }
   }
 
   return (
