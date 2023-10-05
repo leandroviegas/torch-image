@@ -1,3 +1,4 @@
+import { GlobalStyles, ThemeStyles } from "@/components/GlobalStyles";
 import { createContext, useEffect, useState } from "react";
 
 export type Theme = "light" | "dark";
@@ -40,6 +41,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }
   return (
     <ThemeContext.Provider value={{ theme, SwitchTheme }}>
+      <GlobalStyles theme={ThemeStyles[theme]} />
       {children}
     </ThemeContext.Provider>
   );

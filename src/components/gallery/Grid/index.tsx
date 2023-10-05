@@ -11,7 +11,7 @@ export type ImagesGrid = {
     images: Image[];
 }
 
-const Index = ({ images }: { images: Image[] }) => {
+export default function Index({ images }: { images: Image[] })  {
     const [imagesInGrid, setImagesInGrid] = useState<Image[]>(images);
 
     useEffect(() => {
@@ -65,5 +65,3 @@ const Index = ({ images }: { images: Image[] }) => {
         </GridGallery>
     )
 }
-
-export default Index

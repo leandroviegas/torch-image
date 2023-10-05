@@ -12,20 +12,32 @@ import Image from "next/image";
 
 import { ImageCard, ThemeStyles } from "./styles";
 import useAuth from "@/hooks/useAuth";
+import OpaqueBackground from "@/components/OpaqueBackground";
+import ImageDetails from "../ImageDetails";
+import { useState } from "react";
+import useImageDetails from "@/hooks/useImageDetails";
+
+type ImageCardProps = ImageType & {
+  ChangeLikes: (likes: Like[], sourceId: string, provider: string) => void;
+};
 
 const Index = ({
+  imageHeight,
+  imageLink,
+  imageWidth,
+  sourceImageURL,
+  name,
   previewLink,
   owner,
   provider,
   likes,
   sourceId,
   ChangeLikes,
-}: ImageType & {
-  ChangeLikes: (likes: Like[], sourceId: string, provider: string) => void;
-}) => {
+}: ImageCardProps) => {
   const { data: session } = useSession();
   const { theme } = useTheme();
   const { setPopup } = useAuth();
+  const { setShowDetails, setImage } = useImageDetails();
 
   async function Like() {
     let lastLikes = likes;
@@ -71,52 +83,72 @@ const Index = ({
   }
 
   return (
-    <ImageCard theme={ThemeStyles[theme]}>
-      <div className="image">
-        <div className="info-card">
-          <div className="user-info">
-            <a href={owner.userLink} target="_blank">
+    <>
+      <ImageCard theme={ThemeStyles[theme]}>
+        <div
+          onClick={() => {
+            setImage({
+              imageHeight,
+              imageLink,
+              imageWidth,
+              likes,
+              owner,
+              name,
+              previewLink,
+              provider,
+              sourceId,
+              sourceImageURL,
+              Like,
+            });
+            setShowDetails(true);
+          }}
+          className="image"
+        >
+          <div className="info-card">
+            <div className="user-info">
+              <a href={owner.userLink} target="_blank">
+                <Image
+                  width={30}
+                  height={30}
+                  src={owner.profilePicture}
+                  alt={owner.username}
+                />
+                <span>{owner.username}</span>
+              </a>
+            </div>
+          </div>
+          <img src={previewLink} alt="" />
+        </div>
+        <div className="footer">
+          <div className="buttons">
+            <button>
+              <HiCollection />
+            </button>
+            <button
+              onClick={Like}
+              className={
+                likes.find((like) => like.UserId == (session?.user?.id || ""))
+                  ? "selected"
+                  : ""
+              }
+            >
+              <MdThumbUpAlt />
+            </button>
+          </div>
+          <div className="provider">
+            <a href={provider.URL} target="_blank">
+              <span>{provider.name}</span>
               <Image
-                width={30}
-                height={30}
-                src={owner.profilePicture}
-                alt={owner.username}
+                width={25}
+                height={25}
+                src={provider.providerPicture}
+                alt={provider.name}
               />
-              <span>{owner.username}</span>
             </a>
           </div>
         </div>
-        <img src={previewLink} alt="" />
-      </div>
-      <div className="footer">
-        <div className="buttons">
-          <button>
-            <HiCollection />
-          </button>
-          <button
-            onClick={Like}
-            className={
-              likes.find((like) => like.UserId == (session?.user?.id || ""))
-                ? "selected"
-                : ""
-            }
-          >
-            <MdThumbUpAlt />
-          </button>
-        </div>
-        <div className="provider">
-          <a href={provider.URL} target="_blank">
-            <span>{provider.name}</span>
-            <Image
-              width={25}
-              height={25}
-              src={provider.providerPicture}
-              alt={provider.name}
-            />
-          </a>
-        </div>
-      </div>
-    </ImageCard>
+      </ImageCard>
+    </>
   );
 };
 

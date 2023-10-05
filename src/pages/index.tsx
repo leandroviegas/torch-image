@@ -95,9 +95,9 @@ const Header = styled.header`
 `
 
 export default function Home() {
-  const [images, setImages] = useState<Image[]>([]);
-
   const [search, setSearch] = useState<string>('');
+
+  const [images, setImages] = useState<Image[]>([]);
 
   function Search({ query }: { query: string }) {
     api.get('/images/search', { params: { query } }).then(response => {

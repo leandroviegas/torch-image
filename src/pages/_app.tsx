@@ -6,26 +6,14 @@ import { AuthProvider } from "@/contexts/AuthContext";
 
 import type { AppProps } from "next/app";
 import type { Session } from "next-auth";
-import useTheme from "@/hooks/useTheme";
 
 import { Inter } from "next/font/google";
-import { GlobalStyles, ThemeStyles } from "@/components/GlobalStyles";
+import { ImageDetailsProvider } from "@/contexts/ImageDetailsContext";
 
 const inter = Inter({
   weight: "500",
   subsets: ["latin"],
 });
-
-function Main({ children }: { children: React.ReactNode }) {
-  const { theme } = useTheme();
-
-  return (
-    <>
-      <GlobalStyles theme={ThemeStyles[theme]} />
-      <main className={inter.className}>{children}</main>
-    </>
-  );
-}
 
 export default function App({
   Component,
@@ -33,13 +21,15 @@ export default function App({
 }: AppProps<{ session: Session }>) {
   return (
     <AuthProvider>
-      <ThemeProvider>
-        <SessionProvider session={session}>
-          <Main>
-            <Component {...pageProps} />
-          </Main>
-        </SessionProvider>
-      </ThemeProvider>
+      <SessionProvider session={session}>
+        <main className={inter.className}>
+          <ThemeProvider>
+            <ImageDetailsProvider>
+              <Component {...pageProps} />
+            </ImageDetailsProvider>
+          </ThemeProvider>
+        </main>
+      </SessionProvider>
     </AuthProvider>
   );
 }

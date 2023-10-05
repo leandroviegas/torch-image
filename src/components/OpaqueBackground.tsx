@@ -1,4 +1,5 @@
 'use client'
+import { useEffect } from 'react';
 import styled from 'styled-components'
 
 const OpaqueBackground = styled.div`
@@ -14,6 +15,10 @@ const OpaqueBackground = styled.div`
 `
 
 const Index = ({ opened, children }: { opened: boolean, children: React.ReactNode }) => {
+    useEffect(() => {
+        document.body.style.overflowY = opened ? "hidden" : "auto";
+      }, [opened]);
+
     return opened ?
         <OpaqueBackground>
             {children}

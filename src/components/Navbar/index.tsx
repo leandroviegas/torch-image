@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 
 import useOutsideClick from "@/hooks/useOutsideClick";
 import useTheme from "@/hooks/useTheme";
+import useAuth from "@/hooks/useAuth";
 
 import { TiArrowSortedDown } from "react-icons/ti";
 import { FaSearch } from "react-icons/fa";
@@ -19,7 +20,6 @@ import OpaqueBackground from "@/components/OpaqueBackground";
 import Container from "@/components/Container";
 import AuthPopup from "@/components/Navbar/AuthPopup";
 import { Navbar, ThemeStyles } from "./styles";
-import useAuth from "@/hooks/useAuth";
 
 const Index = ({ isIndex = false }) => {
   const { data: session, status } = useSession();
@@ -48,24 +48,26 @@ const Index = ({ isIndex = false }) => {
     setSearch(query as string);
   }, [router]);
 
-  useEffect(() => {
-    document.body.style.overflowY = popup !== "" ? "hidden" : "auto";
-  }, [popup]);
-
   return (
     <>
       <OpaqueBackground opened={popup !== ""}>
         <AuthPopup />
       </OpaqueBackground>
-      <Navbar className="animate__animated animate__bounceInDown" theme={ThemeStyles[theme]} {...{ isIndex }}>
+      <Navbar
+        className="animate__animated animate__bounceInDown"
+        theme={ThemeStyles[theme]}
+        {...{ isIndex }}
+      >
         <Container>
           <div className="logo">
-            <Image
-              width={40}
-              height={40}
-              src={FlameImage}
-              alt="Torch-Image logo"
-            />
+            <Link href="/">
+              <Image
+                width={40}
+                height={40}
+                src={FlameImage}
+                alt="Torch-Image logo"
+              />
+            </Link>
           </div>
           {!isIndex && (
             <div className="search">
