@@ -1,13 +1,15 @@
-import { createContext, useState } from "react";
+import { Dispatch, SetStateAction, createContext, useState } from "react";
 
 import OpaqueBackground from "@/components/OpaqueBackground";
 import ImageDetails from "@/components/gallery/ImageDetails";
 
 import Image from "@/types/Image";
 
+type ImageWithLike = Image & { Like: () => void };
+
 interface ImageDetailsContextProps {
-  image?: Image & { Like: () => void };
-  setImage: (newImage: Image & { Like: () => void }) => void;
+  image?: ImageWithLike;
+  setImage: Dispatch<SetStateAction<ImageWithLike | undefined>>;
   showDetails: boolean;
   setShowDetails: (newShowDetails: boolean) => void;
 }
@@ -33,7 +35,6 @@ export function ImageDetailsProvider({
         <OpaqueBackground opened={showDetails}>
           <ImageDetails
             ImagePreDetails={image}
-            Like={image.Like}
             setShowDetails={setShowDetails}
           />
         </OpaqueBackground>

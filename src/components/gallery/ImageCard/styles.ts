@@ -84,11 +84,17 @@ export const ImageCard = styled.div`
             }
           }
 
-          img {
+          img , svg {
             z-index: 2;
             width: 30px;
             height: 30px;
-            border-radius: 999999px;
+            border-radius: 50%;
+          }
+
+          svg {
+            color: #3e3e3e;
+            background-color: #e0e0e0;
+            padding-bottom: 4px;
           }
         }
       }

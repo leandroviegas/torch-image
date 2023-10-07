@@ -21,6 +21,7 @@ export const ThemeStyles = {
 
 export const GlobalStyles = createGlobalStyle<{theme: GlobalStylesProps}>`
   body {
+    height: 100vh;
     background: ${({ theme }) => theme.body.bgColor};
     transition: all 0.20s linear;
   }

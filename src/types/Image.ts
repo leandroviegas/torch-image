@@ -8,6 +8,7 @@ type Image = {
   previewLink: string;
   imageWidth: number;
   imageHeight: number;
+  tags: string[];
   likes: Like[];
   owner: {
     username: string;

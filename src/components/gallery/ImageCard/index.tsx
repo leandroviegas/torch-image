@@ -4,7 +4,7 @@ import api from "@/services/api";
 import { useSession } from "next-auth/react";
 import useTheme from "@/hooks/useTheme";
 
-import { HiCollection } from "react-icons/hi";
+import { HiCollection, HiUser } from "react-icons/hi";
 import { MdThumbUpAlt } from "react-icons/md";
 
 import ImageType, { Like } from "@/types/Image";
@@ -12,10 +12,8 @@ import Image from "next/image";
 
 import { ImageCard, ThemeStyles } from "./styles";
 import useAuth from "@/hooks/useAuth";
-import OpaqueBackground from "@/components/OpaqueBackground";
-import ImageDetails from "../ImageDetails";
-import { useState } from "react";
 import useImageDetails from "@/hooks/useImageDetails";
+import { useEffect, useRef, useState } from "react";
 
 type ImageCardProps = ImageType & {
   ChangeLikes: (likes: Like[], sourceId: string, provider: string) => void;
@@ -32,6 +30,7 @@ const Index = ({
   provider,
   likes,
   sourceId,
+  tags,
   ChangeLikes,
 }: ImageCardProps) => {
   const { data: session } = useSession();
@@ -82,11 +81,11 @@ const Index = ({
     }
   }
 
+
   return (
     <>
       <ImageCard theme={ThemeStyles[theme]}>
-        <div
-          onClick={() => {
+        <div onClick={() => {
             setImage({
               imageHeight,
               imageLink,
@@ -96,6 +95,7 @@ const Index = ({
               name,
               previewLink,
               provider,
+              tags,
               sourceId,
               sourceImageURL,
               Like,
@@ -107,17 +107,24 @@ const Index = ({
           <div className="info-card">
             <div className="user-info">
               <a href={owner.userLink} target="_blank">
-                <Image
-                  width={30}
-                  height={30}
-                  src={owner.profilePicture}
-                  alt={owner.username}
-                />
+                {owner.profilePicture ? (
+                  <Image
+                    width={30}
+                    height={30}
+                    src={owner.profilePicture}
+                    alt={`${owner.username} profile picture`}
+                  />
+                ) : (
+                  <HiUser />
+                )}
                 <span>{owner.username}</span>
               </a>
             </div>
           </div>
-          <img src={previewLink} alt="" />
+          <img
+            src={previewLink}
+            alt=""
+          />
         </div>
         <div className="footer">
           <div className="buttons">

@@ -4,12 +4,29 @@ export const ThemeStyles = {
   light: {
     backgroundColor: "#f1f1f1",
     imageInfo: {
-      backgroundColor: "#e4e4e4",
+      backgroundColor: "#ebebeb",
+      imageActions: {
+        userProfile: {
+          backgroundColor: "#f1f1f1",
+          color: "#0e0e0e",
+          hover: {
+            backgroundColor: "#0e0e0e",
+          },
+        },
+        button: {
+          color: "#595959",
+          backgroundColor: "#f1f1f1",
+          hover: {
+            color: "#1d1d1d",
+            borderColor: "#373737",
+          },
+        },
+      },
     },
     scrollbar: {
-      color: "#a3a3ab",
+      color: "#c7c7c7",
       hover: {
-        color: "#7e7e7e",
+        color: "#b0b0b0",
       },
     },
   },
@@ -17,6 +34,23 @@ export const ThemeStyles = {
     backgroundColor: "#161616",
     imageInfo: {
       backgroundColor: "#0e0e0e",
+      imageActions: {
+        userProfile: {
+          backgroundColor: "#161616",
+          color: "#f1f1f1",
+          hover: {
+            backgroundColor: "#d5d5d5",
+          },
+        },
+        button: {
+          color: "#f1f1f1",
+          backgroundColor: "#161616",
+          hover: {
+            color: "#b0b0b0",
+            borderColor: "#aaaaaa",
+          },
+        },
+      },
     },
     scrollbar: {
       color: "#090909",
@@ -43,7 +77,6 @@ export const ImageDetails = styled.div`
 
   .imageInfo {
     background-color: ${({ theme }) => theme.imageInfo.backgroundColor};
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.09);
     border-radius: 7px;
 
     .image {
@@ -59,7 +92,94 @@ export const ImageDetails = styled.div`
         width: 100%;
         position: relative;
 
-        img {
+        .image-actions {
+          height: auto;
+          width: 100%;
+          position: absolute;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          transform: translateY(-100%);
+
+          .user-profile {
+            margin: 10px;
+            button {
+              color: ${({ theme }) =>
+                theme.imageInfo.imageActions.userProfile.color};
+              background-color: ${({ theme }) =>
+                theme.imageInfo.imageActions.userProfile.backgroundColor};
+              padding: 5px 15px;
+              border-radius: 20px;
+              cursor: pointer;
+              box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.12);
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              font-size: 15px;
+
+              .user-profile-picture {
+                img,
+                svg {
+                  width: 30px;
+                  height: 30px;
+                  border-radius: 50%;
+                }
+
+                svg {
+                  color: #3e3e3e;
+                  background-color: #e0e0e0;
+                  padding-bottom: 4px;
+                }
+              }
+            }
+          }
+
+          .actions {
+            margin: 10px;
+            display: flex;
+            gap: 12px;
+
+            button {
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              background: ${({ theme }) =>
+                theme.imageInfo.imageActions.button.backgroundColor};
+              color: ${({ theme }) =>
+                theme.imageInfo.imageActions.button.color};
+              border: 1px solid #c7c7c7;
+              font-size: 20px;
+              border-radius: 50%;
+              padding: 10px;
+              transition: 0.2s;
+              box-shadow: inset 0 0 0 2px
+              ${({ theme }) =>
+                theme.imageInfo.imageActions.button.backgroundColor};
+
+              &:hover {
+                color: ${({ theme }) =>
+                  theme.imageInfo.imageActions.button.hover.color};
+                border: 1px solid
+                  ${({ theme }) =>
+                    theme.imageInfo.imageActions.button.hover.borderColor};
+              }
+            }
+
+            button.selected {
+              background: #ffa62b;
+              color: #ffffff;
+              border: 1px solid #ff9f17;
+              box-shadow: inset 0 0 0 2px #ffffff;
+
+              &:hover {
+                background: #ffa62b;
+                border: 1px solid #ff9500;
+              }
+            }
+          }
+        }
+
+        > a > img {
           width: 100%;
           height: 100%;
           max-height: 600px;
