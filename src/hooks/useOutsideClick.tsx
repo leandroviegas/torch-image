@@ -5,6 +5,7 @@ function useOutsideClick<T>(callback: () => void) {
     const ref = useRef<any>();
 
     const handleClick = (e: any) => {
+        if (!(e.offsetX > e.target.clientWidth || e.offsetY > e.target.clientHeight)) 
         if (ref.current && !ref.current.contains(e.target)) {
             callback();
         }

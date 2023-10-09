@@ -153,8 +153,8 @@ export const ImageDetails = styled.div`
               padding: 10px;
               transition: 0.2s;
               box-shadow: inset 0 0 0 2px
-              ${({ theme }) =>
-                theme.imageInfo.imageActions.button.backgroundColor};
+                ${({ theme }) =>
+                  theme.imageInfo.imageActions.button.backgroundColor};
 
               &:hover {
                 color: ${({ theme }) =>
@@ -190,31 +190,25 @@ export const ImageDetails = styled.div`
       .comment-section {
         max-height: 600px;
         width: 600px;
-        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
 
         @media (max-width: 768px) {
           width: 100%;
         }
 
-        /* width */
-        ::-webkit-scrollbar {
-          width: 10px;
+        .comment-list {
+          height: 100%;
+          overflow-y: auto;
+          align-content: stretch;
         }
 
-        /* Track */
-        ::-webkit-scrollbar-track {
-          border-radius: 10px;
-        }
-
-        /* Handle */
-        ::-webkit-scrollbar-thumb {
-          background: ${({ theme }) => theme.scrollbar.color};
-          border-radius: 10px;
-        }
-
-        /* Handle on hover */
-        ::-webkit-scrollbar-thumb:hover {
-          background: ${({ theme }) => theme.scrollbar.hover.color};
+        .comment-form {
+          width: 100%;
+          height: auto;
+          p {
+            overflow-wrap: break-word;
+          }
         }
       }
     }

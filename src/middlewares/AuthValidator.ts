@@ -4,7 +4,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import User from "@/db/models/User";
 
 export default function AuthValidator(permitedRoles: string[], handle: (req: NextApiRequest, res: NextApiResponse, next?: any) => Promise<void>) {
-    return async function Validator(req: NextApiRequest, res: NextApiResponse, next: any) {
+    return async function Validator(req: NextApiRequest, res: NextApiResponse, next?: any) {
         const session = await getServerSession(req, res, authOptions);
 
         if (!session?.user) throw new Error("unauthorized");
@@ -17,6 +17,6 @@ export default function AuthValidator(permitedRoles: string[], handle: (req: Nex
 
         req.user = user;
 
-        return await handle(req, res, next)
+        return handle(req, res, next)
     }
 }

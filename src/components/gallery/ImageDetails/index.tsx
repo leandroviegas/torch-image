@@ -2,8 +2,9 @@ import useOutsideClick from "@/hooks/useOutsideClick";
 
 import { ImageDetails, ThemeStyles } from "./styles";
 import Comment from "./Comment";
+import CommentForm from "./Comment/Form";
 
-import Image from "@/types/Image";
+import Image, { Comment as CommentType } from "@/types/Image";
 import useTheme from "@/hooks/useTheme";
 import GridGallery from "@/components/gallery/Grid";
 import { useEffect, useState } from "react";
@@ -30,15 +31,40 @@ function Index({ ImagePreDetails, setShowDetails }: ImageDetailsProps) {
 
   const [page, setPage] = useState<number>(1);
 
-  const [loadStatus, setLoadStatus] = useState<"load"| "loading" | "success" | "error">(
-    "success"
-  );
+  const [loadStatus, setLoadStatus] = useState<
+    "load" | "loading" | "success" | "error"
+  >("success");
+
+
+  const[loadCommentsStatus, setLoadCommentsStatus] = useState<"load" | "loading" | "success" | "error">("load");
+
+  const [comments, setComments] = useState<CommentType[]>([]);
+
+  function LoadComments() {
+    if (loadCommentsStatus == "loading") return;
+
+    setLoadCommentsStatus("loading");
+    setComments([]);
+    api
+      .get("/image/details", {
+        params: {
+          identification: ImagePreDetails.sourceId,
+          provider: ImagePreDetails.provider.name,
+        },
+      })
+      .then((resp) => {
+        setComments(resp.data.image?.comments);
+        setLoadCommentsStatus("success");
+      }).catch(() => {
+        setLoadCommentsStatus("error");
+      });;
+  }
 
   function Search({ query }: { query: string }) {
     if (loadStatus == "loading") return;
 
     setLoadStatus("loading");
-    
+
     api
       .get("/images/search", { params: { query, page } })
       .then((resp) => {
@@ -60,6 +86,8 @@ function Index({ ImagePreDetails, setShowDetails }: ImageDetailsProps) {
   useEffect(() => {
     setImages([]);
     Search({ query: ImagePreDetails?.tags[0] || "" });
+
+    LoadComments();
   }, [ImagePreDetails.sourceId, ImagePreDetails.provider.name]);
 
   return (
@@ -111,9 +139,14 @@ function Index({ ImagePreDetails, setShowDetails }: ImageDetailsProps) {
             </div>
           </div>
           <div className="comment-section">
-            <Comment />
-            <Comment />
-            <Comment />
+            <div className="comment-list styled-scroll">
+              {comments?.map((comment, index) => (
+                <Comment {...comment} key={`${comment.id}-${index}`} />
+              ))}
+            </div>
+            <div className="comment-form">
+              <CommentForm identification={ImagePreDetails.sourceId} provider={ImagePreDetails.provider.name} CommentSuccess={LoadComments} />
+            </div>
           </div>
         </div>
       </div>
@@ -121,10 +154,9 @@ function Index({ ImagePreDetails, setShowDetails }: ImageDetailsProps) {
         images={images}
         loading={loadStatus == "loading"}
         LoadMore={() => {
-          setLoadStatus((ls) => (ls == "loading" ? ls : "load"))
+          setLoadStatus((ls) => (ls == "loading" ? ls : "load"));
         }}
       />
-
     </ImageDetails>
   );
 }

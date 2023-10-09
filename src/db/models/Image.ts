@@ -4,6 +4,7 @@ import sequelize from "../database";
 
 // Models
 import User from "./User";
+import Comment from "./Comment";
 
 class ImageLikes extends Model {
   declare UserId: string;
@@ -17,6 +18,7 @@ class Image extends Model {
   declare identification: string;
   declare provider: string;
   declare likes?: (User & { image_likes: ImageLikes })[];
+  declare comments?: (User & { image_comment: Comment })[];
 }
 
 Image.init(
@@ -67,6 +69,18 @@ ImageLikes.init(
 Image.belongsToMany(User, { through: ImageLikes, as: "likes" });
 
 User.belongsToMany(Image, { through: ImageLikes, as: "likes" });
+
+/* Image Comments Relation */
+
+Image.belongsToMany(User, {
+  through: { model: Comment, unique: false },
+  as: "comments",
+});
+
+User.belongsToMany(Image, {
+  through: { model: Comment, unique: false },
+  as: "comments",
+});
 
 export { ImageLikes };
 

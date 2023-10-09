@@ -1,8 +1,10 @@
 import { MdOutlineInsertComment } from "react-icons/md";
 import { Comment, ThemeStyles } from "./styles";
 import useTheme from "@/hooks/useTheme";
+import { Comment as CommentType } from "@/types/Image";
+import moment from "moment";
 
-function Index() {
+function Index({ content, createdAt, updatedAt, user, id }: CommentType) {
   const { theme } = useTheme();
 
   return (
@@ -11,22 +13,22 @@ function Index() {
         <span className="avatar">
           <img
             src={
-              "https://pixabay.com/get/g6bef69c35e5c469375529ceb82f9d6be0f7d47f6aefe2a8abdf800eded4399f3112e39c92bca3e39165bbfe6128bc04e22dbbdce64c05677c7a2226c51c446a9_1280.jpg"
+              user.profilePicture
             }
-            alt=""
+            alt={`${user.username} profile picture`}
           />
         </span>
         <div>
-          <span className="username">Leandro Viegas</span>
-          <span className="date">7 de setembro</span>
+          <span className="username">{user.username ?? "..."}</span>
+          <span className="date">{moment(createdAt).format('LL')}</span>
         </div>
       </div>
       <div className="content">
-        <p>Teste</p>
+        <p>{content}</p>
       </div>
       <div className="actions">
         <button>
-          <MdOutlineInsertComment /> Responder
+          <MdOutlineInsertComment /> Answer
         </button>
       </div>
     </Comment>

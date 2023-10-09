@@ -1,4 +1,4 @@
-export type Like =  { UserId: string; username: string; profilePicture: string }
+export type Like = { UserId: string; username: string; profilePicture: string };
 
 type Image = {
   name: string;
@@ -19,6 +19,19 @@ type Image = {
     name: string;
     URL: string;
     providerPicture: string;
+  };
+};
+
+export type Comment = {
+  id?: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  user: {
+    id?: string;
+    username: string;
+    profilePicture: string;
+    userLink: string;
   };
 };
 
