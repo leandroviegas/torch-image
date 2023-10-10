@@ -2,7 +2,7 @@ import { Sequelize } from "sequelize";
 
 const dbConnectionString: string = process.env.DB_CONNECTION_STRING || "";
 
-const sequelize = new Sequelize(dbConnectionString, { ssl: true });
+const sequelize = new Sequelize(dbConnectionString, { ssl: true, dialectModule: require('pg') });
 
 sequelize
   .sync({ force: false })
