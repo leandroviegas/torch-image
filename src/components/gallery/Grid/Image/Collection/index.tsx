@@ -13,7 +13,7 @@ function Index({outClick}: {outClick: () => void}) {
         </div>
       </CollectionDropdown>
     </OutClick>
-  );
+  ); 
 }
 
 export default Index;
