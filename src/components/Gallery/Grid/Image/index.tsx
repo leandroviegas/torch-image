@@ -151,7 +151,7 @@ const Index = ({
           <div className="provider">
             <a href={provider.URL} target="_blank">
               <span>{provider.name}</span>
-              <Image
+              <img
                 width={25}
                 height={25}
                 referrerPolicy="no-referrer"
