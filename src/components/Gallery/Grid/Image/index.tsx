@@ -154,6 +154,7 @@ const Index = ({
               <Image
                 width={25}
                 height={25}
+                referrerPolicy="no-referrer"
                 src={provider.providerPicture}
                 alt={provider.name}
               />
