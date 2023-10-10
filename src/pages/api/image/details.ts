@@ -27,7 +27,7 @@ export default catchAsyncErrors(
       res.status(200).json({
         image: {
           ...image[0],
-          comments: image.map((img: any) => img.comments).map((comment: any) => ({
+          comments: image.map((img: any) => img.comments).filter((comment: any) => comment.image_comment.content != null).map((comment: any) => ({
             id: comment.id,
             content: comment.image_comment.content,
             createdAt: comment.image_comment.createdAt,

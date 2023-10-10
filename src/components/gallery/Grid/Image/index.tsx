@@ -13,7 +13,9 @@ import Image from "next/image";
 import { ImageCard, ThemeStyles } from "./styles";
 import useAuth from "@/hooks/useAuth";
 import useImageDetails from "@/hooks/useImageDetails";
-import { useEffect, useRef, useState } from "react";
+import Collection from "./Collection";
+import { useState } from "react";
+import OpaqueBackground from "@/components/OpaqueBackground";
 
 type ImageCardProps = ImageType & {
   ChangeLikes: (likes: Like[], sourceId: string, provider: string) => void;
@@ -37,6 +39,8 @@ const Index = ({
   const { theme } = useTheme();
   const { setPopup } = useAuth();
   const { setShowDetails, setImage } = useImageDetails();
+
+  const [collectionDropdown, setCollectionDropdown] = useState<boolean>(false);
 
   async function Like() {
     let lastLikes = likes;
@@ -81,11 +85,16 @@ const Index = ({
     }
   }
 
-
   return (
     <>
+      {collectionDropdown && (
+        <OpaqueBackground opened={collectionDropdown}>
+             <Collection outClick={() => setCollectionDropdown(false)} />
+        </OpaqueBackground>
+      )}
       <ImageCard theme={ThemeStyles[theme]}>
-        <div onClick={() => {
+        <div
+          onClick={() => {
             setImage({
               imageHeight,
               imageLink,
@@ -121,16 +130,13 @@ const Index = ({
               </a>
             </div>
           </div>
-          <img
-            src={previewLink}
-            alt=""
-          />
+          <img src={previewLink} alt="" />
         </div>
         <div className="footer">
-          <div className="buttons">
-            <button>
+          <div className="buttons" onClick={() => setCollectionDropdown(true)}>
+            {/* <button>
               <HiCollection />
-            </button>
+            </button> */}
             <button
               onClick={Like}
               className={

@@ -13,7 +13,7 @@ import type { GetServerSidePropsContext } from "next";
 
 import Navbar from "@/components/Navbar";
 import Container from "@/components/Container";
-import GridGallery from "@/components/gallery/Grid";
+import GridGallery from "@/components/Gallery/Grid";
 
 import Image from "@/types/Image";
 

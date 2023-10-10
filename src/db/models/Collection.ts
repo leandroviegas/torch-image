@@ -78,4 +78,6 @@ Collection.belongsToMany(Image, { through: CollectionImages });
 
 Image.belongsToMany(Collection, { through: CollectionImages });
 
+export { CollectionImages };
+
 export default Collection;

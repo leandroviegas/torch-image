@@ -2,11 +2,10 @@
 import { useState, useEffect, useRef } from "react";
 
 import { GridGallery } from "./styles";
-import ImageCard from "../ImageCard";
+import ImageCard from "../Grid/Image";
 
 import Image, { Like } from "@/types/Image";
 import useImageDetails from "@/hooks/useImageDetails";
-import { FiLoader } from "react-icons/fi";
 
 export type ImagesGrid = {
   colHeight: number;
@@ -16,7 +15,6 @@ export type ImagesGrid = {
 export default function Index({
   images,
   LoadMore,
-  loading = false,
 }: {
   images: Image[];
   LoadMore: () => void;
@@ -116,12 +114,14 @@ export default function Index({
         ? window
         : ScrollableParent
       ).addEventListener("scroll", () => {
-        const parentRect = ScrollableParent.getBoundingClientRect();
-        const gridRect = grid.current.getBoundingClientRect();
-        const distance = gridRect.height + gridRect.top - parentRect.height;
-        if (distance < (parentRect.height * 2)) {
-          LoadMore();
-        }
+        try {
+          const parentRect = ScrollableParent.getBoundingClientRect();
+          const gridRect = grid.current.getBoundingClientRect();
+          const distance = gridRect.height + gridRect.top - parentRect.height;
+          if (distance < parentRect.height * 2) {
+            LoadMore();
+          }
+        } catch (error) {}
       });
     }
   }, [grid, ScrollableParent]);

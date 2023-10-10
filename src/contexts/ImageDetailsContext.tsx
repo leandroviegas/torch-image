@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, createContext, useState } from "react";
 
 import OpaqueBackground from "@/components/OpaqueBackground";
-import ImageDetails from "@/components/gallery/ImageDetails";
+import ImageDetails from "@/components/Gallery/Grid/Image/Details";
 
 import Image from "@/types/Image";
 

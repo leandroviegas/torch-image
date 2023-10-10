@@ -122,6 +122,7 @@ export const ImageCard = styled.div`
       }
 
       button {
+        position: relative;
         cursor: pointer;
         display: flex;
         align-items: center;

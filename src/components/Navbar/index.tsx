@@ -6,7 +6,6 @@ import Router, { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 
-import useOutsideClick from "@/hooks/useOutsideClick";
 import useTheme from "@/hooks/useTheme";
 import useAuth from "@/hooks/useAuth";
 
@@ -20,6 +19,7 @@ import OpaqueBackground from "@/components/OpaqueBackground";
 import Container from "@/components/Container";
 import AuthPopup from "@/components/Navbar/AuthPopup";
 import { Navbar, ThemeStyles } from "./styles";
+import OutClick from "../OutClick";
 
 const Index = ({ isIndex = false }) => {
   const { data: session, status } = useSession();
@@ -33,10 +33,6 @@ const Index = ({ isIndex = false }) => {
   const [dropdowns, setDropdowns] = useState<{ [key: string]: boolean }>({
     user: false,
   });
-
-  const [dropdownRef] = useOutsideClick(() =>
-    setDropdowns({ ...dropdowns, user: false })
-  );
 
   const router = useRouter();
 
@@ -116,27 +112,28 @@ const Index = ({ isIndex = false }) => {
                 </>
               ) : (
                 <>
-                  <li
-                    ref={dropdownRef}
-                    onClick={() => setDropdowns({ ...dropdowns, user: true })}
-                  >
-                    <img
-                      className="profilePicture"
-                      referrerPolicy="no-referrer"
-                      src={session?.user?.profilePicture || ""}
-                      alt={session?.user?.username || " profile picture"}
-                    />
-                    <span>
-                      {session?.user?.username} <TiArrowSortedDown />
-                      {dropdowns["user"] && (
-                        <div className="dropdown-menu">
-                          <button onClick={() => signOut()} className="item">
-                            Sign Out
-                          </button>
-                        </div>
-                      )}
-                    </span>
-                  </li>
+                  <OutClick callback={() => setDropdowns({ ...dropdowns, user: false })}>
+                    <li
+                      onClick={() => setDropdowns({ ...dropdowns, user: true })}
+                    >
+                      <img
+                        className="profilePicture"
+                        referrerPolicy="no-referrer"
+                        src={session?.user?.profilePicture || ""}
+                        alt={session?.user?.username || " profile picture"}
+                      />
+                      <span>
+                        {session?.user?.username} <TiArrowSortedDown />
+                        {dropdowns["user"] && (
+                          <div className="dropdown-menu">
+                            <button onClick={() => signOut()} className="item">
+                              Sign Out
+                            </button>
+                          </div>
+                        )}
+                      </span>
+                    </li>
+                  </OutClick>
                 </>
               )}
             </ul>
