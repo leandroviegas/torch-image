@@ -38,7 +38,7 @@ export default function Index({
     );
 
     setImage((img: any) => {
-      return `${sourceId}-${provider}` == `${img.sourceId}-${img.provider.name}`
+      return `${sourceId}-${provider}` == `${img?.sourceId}-${img?.provider?.name}`
         ? { ...img, likes }
         : img;
     });

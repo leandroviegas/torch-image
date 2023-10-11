@@ -1,37 +1,37 @@
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import User from '@/db/models/User';
+import User from "@/db/models/User";
 
-import linkfy from '@/utils/linkfy'
+import linkfy from "@/utils/linkfy";
 
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: 'credentials',
+      name: "credentials",
       credentials: {
         usernameOrEmail: { label: "usernameOrEmail", type: "text" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
         const res = await fetch(`${process.env.NEXTAUTH_URL}/api/user/login`, {
-          method: 'POST',
+          method: "POST",
           body: JSON.stringify(credentials),
-          headers: { "Content-Type": "application/json" }
-        })
+          headers: { "Content-Type": "application/json" },
+        });
 
-        const user = await res.json()
+        const user = await res.json();
 
         if (res.ok && user) {
-          return { ...user }
+          return { ...user };
         }
-        return null
-      }
+        return null;
+      },
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
-    })
+    }),
   ],
   callbacks: {
     async session({ session, token, user }) {
@@ -43,13 +43,15 @@ export const authOptions: NextAuthOptions = {
           email: token.email,
           role: token.role,
           link: token.link,
-          profilePicture: token.profilePicture
-        }
-      }
+          profilePicture: token.profilePicture,
+        },
+      };
     },
     async jwt({ token, account, profile, user }) {
       if (account?.provider === "google") {
-        let userQuery = await User.findOne({ where: { email: profile?.email } })
+        let userQuery = await User.findOne({
+          where: { email: profile?.email },
+        });
 
         if (!userQuery)
           userQuery = await User.create({
@@ -57,8 +59,8 @@ export const authOptions: NextAuthOptions = {
             email: user?.email,
             profilePicture: user?.image,
             role: "user",
-            link: linkfy(user?.name || "")
-          })
+            link: linkfy(user?.name || ""),
+          });
 
         token.id = userQuery.id;
         token.username = userQuery.username;
@@ -70,7 +72,7 @@ export const authOptions: NextAuthOptions = {
 
       return token;
     },
-  }
-}
+  },
+};
 
 export default NextAuth(authOptions);

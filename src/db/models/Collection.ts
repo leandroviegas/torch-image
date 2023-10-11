@@ -76,7 +76,7 @@ const CollectionImages = sequelize.define(
 
 Collection.belongsToMany(Image, { through: CollectionImages });
 
-Image.belongsToMany(Collection, { through: CollectionImages });
+Image.belongsToMany(Collection, { through: CollectionImages, onDelete: "CASCADE" });
 
 export { CollectionImages };
 

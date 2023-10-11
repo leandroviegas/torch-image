@@ -44,7 +44,7 @@ Image.init(
     modelName: "Image",
     tableName: "images",
     updatedAt: "updateTimestamp",
-    freezeTableName: true,
+    freezeTableName: false,
   }
 );
 

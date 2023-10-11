@@ -133,8 +133,8 @@ const Index = ({
           <img src={previewLink} alt="" />
         </div>
         <div className="footer">
-          <div className="buttons" onClick={() => setCollectionDropdown(true)}>
-            {/* <button>
+          <div className="buttons">
+            {/* <button  onClick={() => setCollectionDropdown(true)}>
               <HiCollection />
             </button> */}
             <button
