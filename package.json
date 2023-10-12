@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "database:sync": "node src/db/database.js"
   },
   "dependencies": {
     "@types/node": "20.2.3",
