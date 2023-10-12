@@ -1,58 +1,46 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-export default class Outclick extends React.Component<any, any> {
-  constructor(props: any) {
-    super(props);
+function OutClick({
+  children,
+  onOutClick = () => {},
+  ignoreScrollBars = true,
+}: {
+  children: React.ReactNode;
+  onOutClick: () => void;
+  ignoreScrollBars?: boolean;
+}) {
+  const components = React.Children.toArray(children).map((child: any) =>
+    React.isValidElement(child)
+      ? React.cloneElement<any>(child, { ref: React.createRef() })
+      : child
+  );
 
-    this.state = {
-      newChildren: this.genNewChild(),
-    };
-  }
-
-  componentDidMount() {
-    document.addEventListener("mousedown", this.handleClickOutside, true);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("mousedown", this.handleClickOutside, true);
-  }
-
-  elements: any = [];
-
-  componentDidUpdate(prevProps: any) {
-    if (prevProps !== this.props)
-      this.setState({ ...this.state, newChildren: this.genNewChild() });
-  }
-
-  genNewChild = () => {
-    this.elements = [];
-    return React.Children.toArray(this.props.children).map((child: any) => {
-      const elementRef = React.createRef();
-      let component = React.cloneElement(child, { ref: elementRef });
-      this.elements.push(elementRef);
-      return component;
-    });
-  };
-
-  handleClickOutside = (event: any) => {
+  function HandleClickOutside(event: any) {
     let outClickElements = 0;
-    this.elements.forEach((element: any) => {
-      if (!element?.current?.contains(event.target)) outClickElements++;
+
+    components.forEach((element) => {
+      if (!element?.ref?.current?.contains(event.target)) outClickElements++;
     });
 
     if (
-      event.offsetX > event.target.clientWidth ||
-      event.offsetY > event.target.clientHeight
-    ) {
+      (event.offsetX > event.target?.clientWidth ||
+        event.offsetY > event.target?.clientHeight) &&
+      ignoreScrollBars
+    )
       return;
-    }
 
-    if (this.elements.length <= outClickElements && this.props.callback) {
-      this.props.callback();
-    }
-  };
-
-  render() {
-    return <>{this.state.newChildren}</>;
+    if (components.length <= outClickElements) onOutClick();
   }
+
+  useEffect(() => {
+    document.addEventListener("mousedown", HandleClickOutside, true);
+
+    return () => {
+      document.removeEventListener("mousedown", HandleClickOutside, true);
+    };
+  }, [components]);
+
+  return <>{components}</>;
 }
+
+export default OutClick;

@@ -16,6 +16,7 @@ import useImageDetails from "@/hooks/useImageDetails";
 import Collection from "./Collection";
 import { useState } from "react";
 import OpaqueBackground from "@/components/OpaqueBackground";
+import OutClick from "@/components/OutClick";
 
 type ImageCardProps = ImageType & {
   ChangeLikes: (likes: Like[], sourceId: string, provider: string) => void;
@@ -88,8 +89,8 @@ const Index = ({
   return (
     <>
       {collectionDropdown && (
-        <OpaqueBackground opened={collectionDropdown}>
-             <Collection outClick={() => setCollectionDropdown(false)} />
+        <OpaqueBackground>
+            <Collection outClick={() => setCollectionDropdown(false)} />
         </OpaqueBackground>
       )}
       <ImageCard theme={ThemeStyles[theme]}>
@@ -134,7 +135,13 @@ const Index = ({
         </div>
         <div className="footer">
           <div className="buttons">
-            {/* <button  onClick={() => setCollectionDropdown(true)}>
+            {/* <button
+              onClick={() => {
+                session?.user?.id
+                  ? setCollectionDropdown(true)
+                  : setPopup("SignIn");
+              }}
+            >
               <HiCollection />
             </button> */}
             <button

@@ -88,7 +88,7 @@ function Index({ ImagePreDetails, setShowDetails }: ImageDetailsProps) {
   }, [ImagePreDetails.sourceId, ImagePreDetails.provider.name]);
 
   return (
-    <OutClick callback={() => setShowDetails(false)}>
+    <OutClick onOutClick={() => setShowDetails(false)}>
       <ImageDetails theme={ThemeStyles[theme]}>
         <div className="imageInfo">
           <div className="image">

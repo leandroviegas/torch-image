@@ -13,11 +13,11 @@ export const ThemeStyles = {
 
 export const CollectionDropdown = styled.section`
   width: 100%;
-  max-width: 400px;
+  max-width: 600px;
   border-radius: 7px;
   margin: 30px auto;
   padding: 10px;
-  height: 400px;
+  min-height: 400px;
   background-color: ${({ theme }) => theme.backgroundColor};
   color: ${({ theme }) => theme.color};
   z-index: 10;
@@ -27,7 +27,6 @@ export const CollectionDropdown = styled.section`
     padding: 10px 0;
   }
   div {
-
     button {
       background: #f9ab3d;
       color: #ffffff;
@@ -40,6 +39,29 @@ export const CollectionDropdown = styled.section`
       &:hover {
         background: #ff9500;
         border: 1px solid #ff9500;
+      }
+    }
+
+    .separators {
+      margin: 35px auto;
+      margin-bottom: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      hr {
+        width: 100%;
+        border-top: 1px solid ${({ theme }) => theme.color};
+      }
+
+      span {
+        font-size: 14px;
+        color: ${({ theme }) => theme.color};
+        position: relative;
+        transform: translateY(-50%);
+        background-color:  ${({ theme }) => theme.backgroundColor};
+        padding: 0 7px;
+        margin: 0 auto;
       }
     }
   }

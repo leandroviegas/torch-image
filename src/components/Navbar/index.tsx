@@ -46,9 +46,11 @@ const Index = ({ isIndex = false }) => {
 
   return (
     <>
-      <OpaqueBackground opened={popup !== ""}>
-        <AuthPopup />
-      </OpaqueBackground>
+      {popup !== "" && (
+        <OpaqueBackground>
+          <AuthPopup />
+        </OpaqueBackground>
+      )}
       <Navbar
         className="animate__animated animate__bounceInDown"
         theme={ThemeStyles[theme]}
@@ -112,7 +114,9 @@ const Index = ({ isIndex = false }) => {
                 </>
               ) : (
                 <>
-                  <OutClick callback={() => setDropdowns({ ...dropdowns, user: false })}>
+                  <OutClick
+                    onOutClick={() => setDropdowns({ ...dropdowns, user: false })}
+                  >
                     <li
                       onClick={() => setDropdowns({ ...dropdowns, user: true })}
                     >

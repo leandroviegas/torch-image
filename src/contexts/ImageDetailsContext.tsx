@@ -31,12 +31,17 @@ export function ImageDetailsProvider({
     <ImageDetailsContext.Provider
       value={{ image, setImage, showDetails, setShowDetails }}
     >
-      {image && (
-        <OpaqueBackground opened={showDetails}>
-          <ImageDetails
-            ImagePreDetails={image}
-            setShowDetails={setShowDetails}
-          />
+      {showDetails && (
+        <OpaqueBackground>
+          {image && (
+            <ImageDetails
+              ImagePreDetails={image}
+              setShowDetails={(showDetails) => {
+                setShowDetails(showDetails);
+                document.body.style.overflowY = "auto";
+              }}
+            />
+          )}
         </OpaqueBackground>
       )}
       {children}

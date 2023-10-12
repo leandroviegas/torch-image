@@ -18,7 +18,7 @@ const Index = () => {
   const { popup, setPopup } = useAuth();
 
   return (
-    <Outclick callback={() => setPopup("")}>
+    <Outclick onOutClick={() => setPopup("")}>
       <AuthPopup
         className="animate__animated animate__fadeInDown animate__faster"
         theme={ThemeStyles[theme]}
