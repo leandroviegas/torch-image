@@ -86,7 +86,7 @@ export default function Index({
       ? /(auto|scroll|hidden)/
       : /(auto|scroll)/;
 
-    if (style.position === "fixed") return window;
+    if (style.position === "fixed") return document.body;
     for (var parent = element; (parent = parent.parentElement); ) {
       style = getComputedStyle(parent);
       if (excludeStaticParent && style.position === "static") {
@@ -98,7 +98,7 @@ export default function Index({
         return parent;
     }
 
-    return window;
+    return document.body;
   }
 
   const grid = useRef<any>();
@@ -114,14 +114,16 @@ export default function Index({
         ? window
         : ScrollableParent
       ).addEventListener("scroll", () => {
-        try {
+          try{
           const parentRect = ScrollableParent.getBoundingClientRect();
           const gridRect = grid.current.getBoundingClientRect();
           const distance = gridRect.height + gridRect.top - parentRect.height;
           if (distance < parentRect.height * 2) {
             LoadMore();
           }
-        } catch (error) {}
+        } catch (e) {
+          
+        }
       });
     }
   }, [grid, ScrollableParent]);
