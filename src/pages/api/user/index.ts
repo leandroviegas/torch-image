@@ -3,7 +3,6 @@ import { NextApiRequest, NextApiResponse } from "next"
 import User from "@/db/models/User"
 import catchAsyncErrors from "@/middlewares/ErrorHandler"
 import AuthValidator from "@/middlewares/AuthValidator"
-import { ApiHandler } from "@/classes/ApiHandler";
 
 async function GET(req: NextApiRequest, res: NextApiResponse) {
     let { link } = req.body;
@@ -54,14 +53,20 @@ async function DELETE(req: NextApiRequest, res: NextApiResponse) {
 
 
 export default catchAsyncErrors(async (req: NextApiRequest, res: NextApiResponse) => {
-    const apiHandler = new ApiHandler(req, res);
-
-    apiHandler.methods = {
-        GET,
-        POST,
-        PUT: AuthValidator(["user", "admin"], PUT),
-        DELETE: AuthValidator(["user", "admin"], DELETE)
-    }
-
-    apiHandler.exec();
+    switch (req.method) {
+        case "GET":
+          await GET(req, res);
+          break;
+        case "POST":
+          await POST(req, res);
+          break;
+        case "PUT":
+          await AuthValidator(["user", "admin"], PUT)(req, res);
+          break;
+        case "DELETE":
+          await AuthValidator(["user", "admin"], DELETE)(req, res);
+          break;
+        default:
+          res.status(405).json({ error: "method-not-allowed" });
+      }
 })

@@ -12,6 +12,7 @@ class Collection extends Model {
   declare name: string;
   declare description: string;
   declare ownerId: string;
+  declare images: (Image & { image_collection: Collection })[];
 }
 
 Collection.init(
@@ -46,9 +47,13 @@ Collection.init(
 );
 
 /* Collection Owner Relation */
-Collection.belongsTo(User, { as: "owner", onDelete: "CASCADE" });
+Collection.belongsTo(User, { as: "owner", foreignKey: "ownerId" });
 
-User.hasMany(Collection);
+User.hasMany(Collection, {
+  as: "collections",
+  onDelete: "CASCADE",
+  foreignKey: "ownerId",
+});
 
 /* Collection Images Relation */
 const CollectionLikes = sequelize.define(
@@ -74,9 +79,12 @@ const CollectionImages = sequelize.define(
   { createdAt: true, updatedAt: false }
 );
 
-Collection.belongsToMany(Image, { through: CollectionImages });
+Collection.belongsToMany(Image, { as: "images", through: CollectionImages });
 
-Image.belongsToMany(Collection, { through: CollectionImages, onDelete: "CASCADE" });
+Image.belongsToMany(Collection, {
+  through: CollectionImages,
+  onDelete: "CASCADE",
+});
 
 export { CollectionImages };
 

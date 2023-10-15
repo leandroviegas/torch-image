@@ -8,10 +8,13 @@ type ValueType = string | number | readonly string[] | undefined;
 type InputProperties = {
   status: "error" | "ok";
   messages?: string[];
-  onChange?: ChangeEventHandler<HTMLInputElement> | undefined;
+  onChange?:
+    | ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
+    | undefined;
   defaultValue?: ValueType;
   value?: ValueType;
   name?: string;
+  id?: string;
   label: string;
   autoComplete?: "on" | "off";
   type?:
@@ -33,20 +36,39 @@ const Index = ({
   label,
   type,
   name,
+  id,
   value,
   defaultValue,
   messages,
   onChange,
 }: InputProperties) => {
   const { theme } = useTheme();
+
   return (
     <>
       <FloatingLabelInput theme={ThemeStyles[theme]}>
-        <input
-          {...{ type, name, value, defaultValue, onChange }}
-          placeholder=" "
-        />
-        <label htmlFor="">{label}</label>
+        {type === "textarea" ? (
+          <textarea
+            {...{
+              name,
+              ...(value != null ? { value } : { defaultValue }),
+              onChange,
+            }}
+            placeholder=" "
+          />
+        ) : (
+          <input
+            {...{
+              type,
+              name,
+              id,
+              ...(value != null ? { value } : { defaultValue }),
+              onChange,
+            }}
+            placeholder=" "
+          />
+        )}
+        <label htmlFor={id}>{label}</label>
         {messages?.map((message) => (
           <span key={message}>* {message}</span>
         ))}

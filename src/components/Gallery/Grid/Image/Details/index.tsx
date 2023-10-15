@@ -2,7 +2,7 @@ import { ImageDetails, ThemeStyles } from "./styles";
 import Comment from "./Comment";
 import CommentForm from "./Comment/Form";
 
-import Image, { Comment as CommentType } from "@/types/Image";
+import Image, { Comment as CommentType } from "@/types/Gallery";
 import useTheme from "@/hooks/useTheme";
 import GridGallery from "@/components/Gallery/Grid";
 import { useEffect, useState } from "react";
@@ -10,15 +10,13 @@ import api from "@/services/api";
 import Link from "next/link";
 import { MdThumbUpAlt } from "react-icons/md";
 import { useSession } from "next-auth/react";
-import { HiCollection, HiUser } from "react-icons/hi";
-import OutClick from "@/components/OutClick";
+import { HiUser } from "react-icons/hi";
 
 interface ImageDetailsProps {
-  setShowDetails: (value: boolean) => void;
   ImagePreDetails: Image & { Like: () => void };
 }
 
-function Index({ ImagePreDetails, setShowDetails }: ImageDetailsProps) {
+function Index({ ImagePreDetails }: ImageDetailsProps) {
   const { data: session } = useSession();
   const { theme } = useTheme();
 
@@ -88,7 +86,6 @@ function Index({ ImagePreDetails, setShowDetails }: ImageDetailsProps) {
   }, [ImagePreDetails.sourceId, ImagePreDetails.provider.name]);
 
   return (
-    <OutClick onOutClick={() => setShowDetails(false)}>
       <ImageDetails theme={ThemeStyles[theme]}>
         <div className="imageInfo">
           <div className="image">
@@ -154,13 +151,11 @@ function Index({ ImagePreDetails, setShowDetails }: ImageDetailsProps) {
         </div>
         <GridGallery
           images={images}
-          loading={loadStatus == "loading"}
           LoadMore={() => {
             setLoadStatus((ls) => (ls == "loading" ? ls : "load"));
           }}
         />
       </ImageDetails>
-    </OutClick>
   );
 }
 

@@ -15,7 +15,7 @@ import Navbar from "@/components/Navbar";
 import Container from "@/components/Container";
 import GridGallery from "@/components/Gallery/Grid";
 
-import Image from "@/types/Image";
+import Image from "@/types/Gallery";
 
 import { FiSearch } from "react-icons/fi";
 
@@ -176,7 +176,6 @@ export default function Home() {
       <Container>
         <GridGallery
           images={images}
-          loading={loadStatus == "loading"}
           LoadMore={() =>
             setLoadStatus((ls) => (ls == "loading" || ls == "no-more-results" ? ls : "load"))
           }

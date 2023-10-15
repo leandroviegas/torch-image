@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { createRef, useEffect } from "react";
 import styled from "styled-components";
 
 const OpaqueBackground = styled.div`
@@ -14,16 +14,26 @@ const OpaqueBackground = styled.div`
   overflow-y: auto;
 `;
 
-const Index = ({ children }: { children: React.ReactNode }) => {
+const Index = ({ children, BackgroundClick }: { children: React.ReactNode, BackgroundClick: () => void }) => {
+  const opbgRef = createRef<HTMLDivElement>(); 
+
+  function HandleBackgroundClick(event: MouseEvent) {
+    event.stopPropagation();
+    
+    if(event.target == opbgRef.current) {
+      BackgroundClick();
+    }
+  }
+
   useEffect(() => {
-    document.body.style.overflowY = "hidden";
+      opbgRef.current?.addEventListener("click", HandleBackgroundClick, true)
 
     return () => {
-      document.body.style.overflowY = "auto";
-    };
-  }, []);
+        opbgRef.current?.removeEventListener("click", HandleBackgroundClick, true)
+    }
+  }, [opbgRef])
 
-  return <OpaqueBackground>{children}</OpaqueBackground>;
+  return <OpaqueBackground ref={opbgRef}>{children}</OpaqueBackground>;
 };
 
 export default Index;

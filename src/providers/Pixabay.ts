@@ -1,6 +1,6 @@
 import axios from "axios";
 import Providers from "./providers.info.json";
-import Image from "@/types/Image";
+import Image from "@/types/Gallery";
 
 const pixabay = Providers["pixabay"];
 
@@ -60,4 +60,17 @@ async function PixabaySearch({
   return images;
 }
 
-export { PixabaySearch };
+async function PixabayImageDetails(id: string) {
+  let image= await pixabayApi
+    .get("", {
+      params: {
+        key: process.env.PIXABAY_API_KEY,
+        id
+      },
+    })
+    .then((response) => imageDataPatternize(response.data.hits[0]));
+
+    return image;
+}
+
+export { PixabaySearch, PixabayImageDetails };

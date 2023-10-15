@@ -36,13 +36,14 @@ const Index = ({ isIndex = false }) => {
 
   const router = useRouter();
 
+  const { query } = router.query;
+
   const [search, setSearch] = useState<string>("");
 
-  useEffect(() => {
-    const { query } = router.query;
-
-    setSearch(query as string);
-  }, [router]);
+  if (query)
+    useEffect(() => {
+      setSearch(query as string);
+    }, [query]);
 
   return (
     <>
@@ -115,7 +116,9 @@ const Index = ({ isIndex = false }) => {
               ) : (
                 <>
                   <OutClick
-                    onOutClick={() => setDropdowns({ ...dropdowns, user: false })}
+                    onOutClick={() =>
+                      setDropdowns({ ...dropdowns, user: false })
+                    }
                   >
                     <li
                       onClick={() => setDropdowns({ ...dropdowns, user: true })}

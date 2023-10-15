@@ -4,8 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { GridGallery } from "./styles";
 import ImageCard from "../Grid/Image";
 
-import Image, { Like } from "@/types/Image";
-import useImageDetails from "@/hooks/useImageDetails";
+import Image, { Like } from "@/types/Gallery";
+import useUserGalley from "@/hooks/useUserGalley";
 
 export type ImagesGrid = {
   colHeight: number;
@@ -18,10 +18,9 @@ export default function Index({
 }: {
   images: Image[];
   LoadMore: () => void;
-  loading?: boolean;
 }) {
   const [imagesInGrid, setImagesInGrid] = useState<Image[]>(images);
-  const { setImage } = useImageDetails();
+  const { setImageDetails } = useUserGalley();
 
   useEffect(() => {
     setImagesInGrid(images);
@@ -37,7 +36,7 @@ export default function Index({
       )
     );
 
-    setImage((img: any) => {
+    setImageDetails((img: any) => {
       return `${sourceId}-${provider}` == `${img?.sourceId}-${img?.provider?.name}`
         ? { ...img, likes }
         : img;

@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { SearchImages } from "@/providers/MediaFunctions";
 
-import ImageT from "@/types/Image";
+import ImageT from "@/types/Gallery";
 
 import catchAsyncErrors from "@/middlewares/ErrorHandler";
 

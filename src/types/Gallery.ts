@@ -35,4 +35,21 @@ export type Comment = {
   };
 };
 
+export type Collection = {
+  id?: string;
+  name: string;
+  description: string;
+  link: string;
+  owner: {
+    username: string;
+    profilePicture: string;
+    userLink: string;
+  };
+  images: {
+    id: string;
+    identification: string;
+    provider: string;
+  }[];
+};
+
 export default Image;

@@ -1,7 +1,7 @@
 import { MdOutlineInsertComment } from "react-icons/md";
 import { Comment, ThemeStyles } from "./styles";
 import useTheme from "@/hooks/useTheme";
-import { Comment as CommentType } from "@/types/Image";
+import { Comment as CommentType } from "@/types/Gallery";
 import moment from "moment";
 
 function Index({ content, createdAt, updatedAt, user, id }: CommentType) {

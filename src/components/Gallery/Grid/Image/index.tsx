@@ -7,16 +7,15 @@ import useTheme from "@/hooks/useTheme";
 import { HiCollection, HiUser } from "react-icons/hi";
 import { MdThumbUpAlt } from "react-icons/md";
 
-import ImageType, { Like } from "@/types/Image";
+import ImageType, { Like } from "@/types/Gallery";
 import Image from "next/image";
 
 import { ImageCard, ThemeStyles } from "./styles";
 import useAuth from "@/hooks/useAuth";
-import useImageDetails from "@/hooks/useImageDetails";
+import useUserGalley from "@/hooks/useUserGalley";
 import Collection from "./Collection";
 import { useState } from "react";
 import OpaqueBackground from "@/components/OpaqueBackground";
-import OutClick from "@/components/OutClick";
 
 type ImageCardProps = ImageType & {
   ChangeLikes: (likes: Like[], sourceId: string, provider: string) => void;
@@ -39,9 +38,19 @@ const Index = ({
   const { data: session } = useSession();
   const { theme } = useTheme();
   const { setPopup } = useAuth();
-  const { setShowDetails, setImage } = useImageDetails();
+  const {
+    setShowDetails,
+    setImageDetails,
+    userCollections,
+    setShowCollectionWindow,
+    setImageCollectionTab
+  } = useUserGalley();
 
-  const [collectionDropdown, setCollectionDropdown] = useState<boolean>(false);
+  const inCollections = userCollections.some((userCollection) => {
+    return userCollection.images.some(
+      (image) => image.identification == `${sourceId}-${provider.name}`
+    );
+  });
 
   async function Like() {
     let lastLikes = likes;
@@ -88,15 +97,10 @@ const Index = ({
 
   return (
     <>
-      {collectionDropdown && (
-        <OpaqueBackground>
-            <Collection outClick={() => setCollectionDropdown(false)} />
-        </OpaqueBackground>
-      )}
       <ImageCard theme={ThemeStyles[theme]}>
         <div
           onClick={() => {
-            setImage({
+            setImageDetails({
               imageHeight,
               imageLink,
               imageWidth,
@@ -135,15 +139,29 @@ const Index = ({
         </div>
         <div className="footer">
           <div className="buttons">
-            {/* <button
+            <button
               onClick={() => {
-                session?.user?.id
-                  ? setCollectionDropdown(true)
-                  : setPopup("SignIn");
+                if (session?.user?.id) {
+                  setImageCollectionTab({
+                    imageHeight,
+                    imageLink,
+                    imageWidth,
+                    likes,
+                    owner,
+                    name,
+                    previewLink,
+                    provider,
+                    tags,
+                    sourceId,
+                    sourceImageURL,
+                  })
+                  setShowCollectionWindow(true);
+                } else setPopup("SignIn");
               }}
+              className={inCollections ? "selected" : ""}
             >
               <HiCollection />
-            </button> */}
+            </button>
             <button
               onClick={Like}
               className={

@@ -25,11 +25,12 @@ export const FloatingLabelInput = styled.div`
   position: relative;
   padding-top: 13px;
 
-  input {
+  input,
+  textarea {
     background-color: transparent;
     color: ${({ theme }) => theme.color};
     border: 0;
-    border-bottom: 2px solid ${({ theme }) => theme.border.borderColor};
+    border-bottom: 1.5px solid ${({ theme }) => theme.border.borderColor};
     outline: none;
     min-width: 180px;
     width: 100%;
@@ -43,7 +44,7 @@ export const FloatingLabelInput = styled.div`
     border-radius: 0;
 
     &:focus {
-      border-bottom: 2px solid ${({ theme }) => theme.border.focus.borderColor};
+      border-bottom: 1.5px solid ${({ theme }) => theme.border.focus.borderColor};
     }
 
     &::placeholder {
@@ -55,7 +56,7 @@ export const FloatingLabelInput = styled.div`
     }
 
     &:focus:required:invalid {
-      border-bottom: 2px solid red;
+      border-bottom: 1.5px solid red;
     }
 
     &:required:invalid + label:before {
@@ -65,8 +66,15 @@ export const FloatingLabelInput = styled.div`
     &:focus + label,
     &:not(:placeholder-shown) + label {
       font-size: 11px;
-      margin-top: 0;
+      margin-top: -2px;
     }
+  }
+
+  textarea {
+    resize: vertical;
+    border-radius: 5px;
+    padding-left: 5px;
+    border: 1.5px solid ${({ theme }) => theme.border.borderColor};
   }
 
   label {
@@ -76,11 +84,23 @@ export const FloatingLabelInput = styled.div`
     top: 0;
     left: 0;
     font-size: 14px;
-    margin-top: 13px;
+    margin-top: 14px;
     transition: all 0.3s ease-out;
     -webkit-transition: all 0.3s ease-out;
     -moz-transition: all 0.3s ease-out;
   }
+
+  textarea + label {
+    margin-top: 20px;
+    margin-left: 5px;
+  }
+
+  textarea:focus + label,
+  textarea:not(:placeholder-shown) + label {
+      font-size: 11px;
+      margin-top: -5px;
+      margin-left: 0;
+    }
 
   span {
     display: block;
