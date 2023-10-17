@@ -15,7 +15,6 @@ import useUserGalley from "@/hooks/useUserGalley";
 
 import { Inter } from "next/font/google";
 import { useSession } from "next-auth/react";
-import CollectionForm from "@/components/Gallery/Grid/Image/Collection/Form/styles";
 
 const inter = Inter({
   weight: "500",
@@ -236,24 +235,20 @@ function Collection() {
 
   const gridRef = useRef<any>();
 
+
   useEffect(() => {
-    gridRef.current?.ClearImages(collection?.images);
-    gridRef.current?.AddImages(collection?.images);
-  }, [collection]);
+    gridRef.current?.SetImages(collection?.images || []);
+  }, [collection?.images]);
 
   function LoadCollection() {
     if (link && status != "loading") {
       setStatus("loading");
 
-      gridRef.current?.ClearImages();
-
       api
         .get("/collection", { params: { link: (link as string[])[0] || "" } })
         .then((res) => {
-          setCollection(res.data.collection);
-          setCollectionForm({
-            ...res.data.collection,
-          });
+          setCollection(res.data?.collection);
+          setCollectionForm(res.data?.collection);
           setStatus("success");
         });
     }

@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const ThemeStyles = {
   light: {
     backgroundColor: "#f1f1f1",
+    color: "#0e0e0e",
     imageInfo: {
       backgroundColor: "#ebebeb",
       imageActions: {
@@ -32,6 +33,7 @@ export const ThemeStyles = {
   },
   dark: {
     backgroundColor: "#161616",
+    color: "#f1f1f1",
     imageInfo: {
       backgroundColor: "#0e0e0e",
       imageActions: {
@@ -195,6 +197,17 @@ export const ImageDetails = styled.div`
 
         @media (max-width: 768px) {
           width: 100%;
+        }
+
+        .no-comment {
+          height: 100%;
+          text-align: center;
+          width: 100%;
+          color: ${({ theme }) => theme.color}44;
+          padding: 60px 20px;
+          font-weight: 700;
+          font-size: 18px;
+          margin: 0 auto;
         }
 
         .comment-list {

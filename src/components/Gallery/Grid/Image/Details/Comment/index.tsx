@@ -12,15 +12,15 @@ function Index({ content, createdAt, updatedAt, user, id }: CommentType) {
       <div className="header">
         <span className="avatar">
           <img
-            src={
-              user.profilePicture
-            }
+            width={25}
+            height={25}
+            src={user.profilePicture}
             alt={`${user.username} profile picture`}
           />
         </span>
         <div>
           <span className="username">{user.username ?? "..."}</span>
-          <span className="date">{moment(createdAt).format('LL')}</span>
+          <span className="date">{moment(createdAt).format("LL")}</span>
         </div>
       </div>
       <div className="content">

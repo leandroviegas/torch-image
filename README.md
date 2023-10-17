@@ -23,11 +23,30 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - [x] - Dark Mode
 - [x] - Image Details
 - [x] - Index image list
+- [ ] - Edit/Apagar comentários
 - [ ] - Search for images and list collections
-- [X] - Add image to collections
-- [X] - Collection page
-- [X] - Edit collection
-- [X] - Delete collection
+- [x] - Add image to collections
+- [x] - Collection page
+- [x] - Edit collection
+- [x] - Delete collection
 - [ ] - User page
 - [ ] - Edit user information
 - [ ] - Add more images databases
+
+## Small Implementations
+
+- [ ] - Grid more responsive
+- [ ] - Responsive navbar
+- [x] - Comment color
+- [x] - be the first to comment
+- [x] - Comment input using different typography
+- [ ] - Load circles
+- [ ] - Forms validators
+- [ ] - Error api request handler
+- [x] - Add to collection image details
+- [x] - recomended images not show own
+- [ ] - Not found collection
+- [ ] - Related images force load
+- [ ] - Type of image in filter
+- [x] - Add collection list navbar
+- [x] - Refresh reseting visual content

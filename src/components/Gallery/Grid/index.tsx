@@ -15,7 +15,7 @@ import Image, { Like } from "@/types/Gallery";
 import useUserGalley from "@/hooks/useUserGalley";
 
 const Index = forwardRef<
-  { AddImages: (images: Image[]) => void, ClearImages: () => void },
+  { AddImages: (images: Image[]) => void; ClearImages: () => void },
   { LoadMore: () => void }
 >(({ LoadMore }, ref) => {
   const [imagesInGrid, setImagesInGrid] = useState<Image[]>([]);
@@ -26,11 +26,30 @@ const Index = forwardRef<
     setImagesInGrid((prevImagesInGrid) => [...prevImagesInGrid, ...images]);
   }
 
+  function SetImages(images: Image[]) {
+    setImagesInGrid(prevImagesInGrid =>[...prevImagesInGrid.filter((image) => {
+      return images.some((img) => {
+        return `${image.sourceId}-${image.provider.name}` ==
+          `${img.sourceId}-${img.provider.name}`;
+      })
+    }), ...images.filter((image) => {
+      return !prevImagesInGrid.some((img) => {
+        return `${image.sourceId}-${image.provider.name}` ==
+          `${img.sourceId}-${img.provider.name}`;
+      });
+    })]);
+  }
+
+  function ClearImages() {
+    setImagesInGrid([]);
+  }
+
   useImperativeHandle(
     ref,
     () => ({
       AddImages,
-      ClearImages: () => setImagesInGrid([]),
+      ClearImages,
+      SetImages,
     }),
     []
   );

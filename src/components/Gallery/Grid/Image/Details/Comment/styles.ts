@@ -7,13 +7,13 @@ export const ThemeStyles = {
     actionButtons: {
       color: "#565656",
       hover: {
-        color: "#000",
-        borderColor: "#000",
+        color: "#0a0a0a",
+        borderColor: "#0a0a0a",
       },
     }
   },
   dark: {
-    backgroundColor: "#000",
+    backgroundColor: "#0a0a0a",
     color: "#c5c5c5",
     actionButtons: {
       color: "#c5c5c5",
@@ -38,8 +38,6 @@ export const Comment = styled.div`
 
     .avatar {
       img {
-        width: 25px;
-        height: 25px;
         border: 0;
         border-radius: 50%;
         object-fit: cover;

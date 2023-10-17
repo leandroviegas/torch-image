@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 
 function OutClick({
   children,
@@ -15,22 +15,25 @@ function OutClick({
       : child
   );
 
-  function HandleClickOutside(event: any) {
-    let outClickElements = 0;
+  const HandleClickOutside = useCallback(
+    (event: any) => {
+      let outClickElements = 0;
 
-    components.forEach((element) => {
-      if (!element?.ref?.current?.contains(event.target)) outClickElements++;
-    });
+      components.forEach((element) => {
+        if (!element?.ref?.current?.contains(event.target)) outClickElements++;
+      });
 
-    if (
-      (event.offsetX > event.target?.clientWidth ||
-        event.offsetY > event.target?.clientHeight) &&
-      ignoreScrollBars
-    )
-      return;
+      if (
+        (event.offsetX > event.target?.clientWidth ||
+          event.offsetY > event.target?.clientHeight) &&
+        ignoreScrollBars
+      )
+        return;
 
-    if (components.length <= outClickElements) onOutClick();
-  }
+      if (components.length <= outClickElements) onOutClick();
+    },
+    [components, ignoreScrollBars, onOutClick]
+  );
 
   useEffect(() => {
     document.addEventListener("mousedown", HandleClickOutside, true);
@@ -38,8 +41,10 @@ function OutClick({
     return () => {
       document.removeEventListener("mousedown", HandleClickOutside, true);
     };
-  }, [components]);
+  }, [HandleClickOutside]);
 
+  console.log(components)
+  
   return <>{components}</>;
 }
 

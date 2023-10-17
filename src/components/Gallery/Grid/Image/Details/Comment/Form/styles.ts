@@ -19,7 +19,7 @@ export const ThemeStyles = {
     }
   },
   dark: {
-    backgroundColor: "#000",
+    backgroundColor: "#0a0a0a",
     input: {
       color: "#fff",
       placeholder: {

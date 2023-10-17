@@ -1,6 +1,7 @@
 import axios from "axios";
 import Providers from "./providers.info.json";
 import Image from "@/types/Gallery";
+import cacheData from "memory-cache";
 
 const pixabay = Providers["pixabay"];
 
@@ -11,7 +12,7 @@ const pixabayApi = axios.create({
 });
 
 const imageDataPatternize = (hit: any): Image => {
-  return {
+  const image = {
     name: "",
     sourceId: hit.id,
     sourceImageURL: hit.pageURL,
@@ -32,6 +33,14 @@ const imageDataPatternize = (hit: any): Image => {
       providerPicture: pixabay.providerPicture,
     },
   };
+
+  cacheData.put(
+    `${image.sourceId}-Pixabay-Image`,
+    image,
+    15 * 24 * 1000 * 60 * 60
+  );
+
+  return image;
 };
 
 async function PixabaySearch({
@@ -61,16 +70,22 @@ async function PixabaySearch({
 }
 
 async function PixabayImageDetails(id: string) {
-  let image= await pixabayApi
-    .get("", {
-      params: {
-        key: process.env.PIXABAY_API_KEY,
-        id
-      },
-    })
-    .then((response) => imageDataPatternize(response.data.hits[0]));
-
+  const cacheId = `${id}-Pixabay-Image`;
+  const value = cacheData.get(cacheId);
+  if (value) {
+    return value;
+  } else {
+    let image = await pixabayApi
+      .get("", {
+        params: {
+          key: process.env.PIXABAY_API_KEY,
+          id,
+        },
+      })
+      .then((response) => imageDataPatternize(response.data.hits[0]));
+    cacheData.put(cacheId, image, 15 * 24 * 1000 * 60 * 60);
     return image;
+  }
 }
 
 export { PixabaySearch, PixabayImageDetails };

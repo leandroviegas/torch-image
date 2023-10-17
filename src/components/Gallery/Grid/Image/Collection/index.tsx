@@ -10,11 +10,7 @@ import { Collection } from "@/types/Gallery";
 import useUserGalley from "@/hooks/useUserGalley";
 import Link from "next/link";
 
-function Index({
-  image,
-}: {
-  image: { sourceId: string; provider: string };
-}) {
+function Index({ image }: { image: { sourceId: string; provider: string } }) {
   const { theme } = useTheme();
 
   const { data: session } = useSession();
@@ -30,10 +26,11 @@ function Index({
     api
       .get("/collections", { params: { ownerId: session?.user?.id } })
       .then((resp) => {
-        setUserCollections(resp.data.collections.sort((a: Collection, b: Collection) =>
-        `${a.name}` < `${b.name}`
-          ? -1
-          : 1));
+        setUserCollections(
+          resp.data.collections.sort((a: Collection, b: Collection) =>
+            `${a.name}` < `${b.name}` ? -1 : 1
+          )
+        );
       });
   }
 
@@ -66,73 +63,73 @@ function Index({
   }
 
   return (
-      <CollectionDropdown theme={ThemeStyles[theme]}>
-        <div>
-          {tab == "new-form" ? (
-            <CreateForm BackToCollections={() => setTab("list")} />
-          ) : (
-            <>
-              <button
-                type="button"
-                onClick={() => setTab("new-form")}
-                className="new-collection"
-              >
-                New Collection
-              </button>
-              <div className="separators">
-                <hr />
-                <span>Your Collections</span>
-              </div>
-              <div className="collections styled-scroll">
-                {userCollections?.map((collection) => {
-                  const imageSelected = collection?.images?.some(
-                    (img) =>
-                      img?.identification ==
-                      `${image?.sourceId}-${image?.provider}`
-                  );
+    <CollectionDropdown theme={ThemeStyles[theme]}>
+      <div>
+        {tab == "new-form" ? (
+          <CreateForm BackToCollections={() => setTab("list")} />
+        ) : (
+          <>
+            <button
+              type="button"
+              onClick={() => setTab("new-form")}
+              className="new-collection"
+            >
+              New Collection
+            </button>
+            <div className="separators">
+              <hr />
+              <span>Your Collections</span>
+            </div>
+            <div className="collections styled-scroll">
+              {userCollections?.map((collection) => {
+                const imageSelected = collection?.images?.some(
+                  (img) =>
+                    img?.identification ==
+                    `${image?.sourceId}-${image?.provider}`
+                );
 
-                  return (
-                    <div
-                      key={`${collection.id}-${collection.name}`}
-                      className="collection"
-                    >
-                      <div className="name">
-                        <Link href={`/collection/${collection.link}`}>
+                return (
+                  <div
+                    key={`${collection.id}-${collection.name}`}
+                    className="collection"
+                  >
+                    <div className="name">
+                      <Link href={`/collection/${collection.link}`}>
                         <h2>{collection.name}</h2>
-                        </Link>
-                      </div>
-                      <button
-                        onClick={() =>
-                          HandleImageCollection({
-                            action: "add",
-                            collectionId: collection.id || "",
-                          })
-                        }
-                        className={`add ${
-                          imageSelected == true ? "selected" : ""
-                        }`}
-                      >
-                        +
-                      </button>
-                      <button
-                        onClick={() =>
-                          HandleImageCollection({
-                            action: "remove",
-                            collectionId: collection.id || "",
-                          })
-                        }
-                        className={`remove ${!imageSelected ? "selected" : ""}`}
-                      >
-                        -
-                      </button>
+                      </Link>
                     </div>
-                  );
-                })}
-              </div>
-            </>
-          )}
-        </div>
-      </CollectionDropdown>
+                    <button
+                      onClick={() =>
+                        HandleImageCollection({
+                          action: "add",
+                          collectionId: collection.id || "",
+                        })
+                      }
+                      className={`add ${
+                        imageSelected == true ? "selected" : ""
+                      }`}
+                    >
+                      +
+                    </button>
+                    <button
+                      onClick={() =>
+                        HandleImageCollection({
+                          action: "remove",
+                          collectionId: collection.id || "",
+                        })
+                      }
+                      className={`remove ${!imageSelected ? "selected" : ""}`}
+                    >
+                      -
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </div>
+    </CollectionDropdown>
   );
 }
 

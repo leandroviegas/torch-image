@@ -1,8 +1,20 @@
-import { MdOutlineInsertComment } from "react-icons/md";
-import Form, { ThemeStyles } from "./styles";
-import useTheme from "@/hooks/useTheme";
 import { useState } from "react";
+
+import Form, { ThemeStyles } from "./styles";
+
+import useTheme from "@/hooks/useTheme";
+
 import api from "@/services/api";
+
+import { MdOutlineInsertComment } from "react-icons/md";
+
+import { Inter } from "next/font/google";
+
+const inter = Inter({
+  weight: "500",
+  subsets: ["latin"],
+});
+
 
 type CommentFormProps = {
   commentId?: string;
@@ -56,7 +68,7 @@ function CommentForm({
     <Form onSubmit={CommentHandler} theme={ThemeStyles[theme]}>
       <div>
         <textarea
-          className=" styled-scroll"
+          className={`${inter.className} styled-scroll`}
           name="comment"
           value={content}
           onChange={(evt) => setContent(evt.target.value)}

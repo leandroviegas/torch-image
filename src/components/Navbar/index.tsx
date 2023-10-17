@@ -20,6 +20,7 @@ import Container from "@/components/Container";
 import AuthPopup from "@/components/Navbar/AuthPopup";
 import { Navbar, ThemeStyles } from "./styles";
 import OutClick from "../OutClick";
+import useUserGalley from "@/hooks/useUserGalley";
 
 const Index = ({ isIndex = false }) => {
   const { data: session, status } = useSession();
@@ -28,10 +29,13 @@ const Index = ({ isIndex = false }) => {
 
   const { popup, setPopup } = useAuth();
 
+  const { userCollections } = useUserGalley();
+
   const loading = status === "loading";
 
   const [dropdowns, setDropdowns] = useState<{ [key: string]: boolean }>({
     user: false,
+    collections: false,
   });
 
   const router = useRouter();
@@ -95,6 +99,41 @@ const Index = ({ isIndex = false }) => {
               <li>
                 <Link href="/">Explore</Link>
               </li>
+              <>
+                <OutClick
+                  onOutClick={() =>
+                    setDropdowns({ ...dropdowns, collections: false })
+                  }
+                >
+                  <li
+                    onClick={() =>
+                      setDropdowns({ ...dropdowns, collections: true })
+                    }
+                  >
+                    <span>
+                      Your collections <TiArrowSortedDown />
+                      {dropdowns.collections && (
+                        <div className="dropdown-menu">
+                          {userCollections?.length !== 0 ? (
+                            userCollections.map((collection) => (
+                              <Link
+                                href={`/collection/${collection.link}`}
+                                key={collection.id}
+                              >
+                                <button className="item">
+                                  {collection.name}
+                                </button>
+                              </Link>
+                            ))
+                          ) : (
+                            <button className="empty">No collections</button>
+                          )}
+                        </div>
+                      )}
+                    </span>
+                  </li>
+                </OutClick>
+              </>
               <li>
                 <HiOutlineLightBulb size={22} onClick={SwitchTheme} />
               </li>
@@ -115,12 +154,13 @@ const Index = ({ isIndex = false }) => {
               ) : (
                 <>
                   <OutClick
-                    onOutClick={() =>
-                      setDropdowns({ ...dropdowns, user: false })
-                    }
+                    onOutClick={() => {
+                      console.log("aoba")
+                      setDropdowns(prevDropdowns =>({ ...prevDropdowns, user: false }))
+                    }}
                   >
                     <li
-                      onClick={() => setDropdowns({ ...dropdowns, user: true })}
+                      onClick={() => setDropdowns(prevDropdowns =>({ ...prevDropdowns, user: true }))}
                     >
                       <img
                         className="profilePicture"
@@ -130,7 +170,7 @@ const Index = ({ isIndex = false }) => {
                       />
                       <span>
                         {session?.user?.username} <TiArrowSortedDown />
-                        {dropdowns["user"] && (
+                        {dropdowns.user && (
                           <div className="dropdown-menu">
                             <button onClick={() => signOut()} className="item">
                               Sign Out

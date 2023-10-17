@@ -102,7 +102,8 @@ export const Navbar = styled.nav<NavbarProps>`
       cursor: pointer;
 
       &:hover {
-        color: ${({ isIndex, theme }) => (isIndex ? "#fff" : theme.hover.color)};
+        color: ${({ isIndex, theme }) =>
+          isIndex ? "#fff" : theme.hover.color};
       }
     }
 
@@ -137,6 +138,11 @@ export const Navbar = styled.nav<NavbarProps>`
       padding: 7px 12px;
       color: #818181;
       white-space: nowrap;
+
+      &.empty {
+        opacity: 0.5;
+        color: #818181;
+      }
 
       &:hover {
         color: #2a2a2a;
