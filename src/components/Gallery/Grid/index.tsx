@@ -1,5 +1,12 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 
 import { GridGallery } from "./styles";
 import ImageCard from "../Grid/Image";
@@ -7,41 +14,47 @@ import ImageCard from "../Grid/Image";
 import Image, { Like } from "@/types/Gallery";
 import useUserGalley from "@/hooks/useUserGalley";
 
-export type ImagesGrid = {
-  colHeight: number;
-  images: Image[];
-};
+const Index = forwardRef<
+  { AddImages: (images: Image[]) => void, ClearImages: () => void },
+  { LoadMore: () => void }
+>(({ LoadMore }, ref) => {
+  const [imagesInGrid, setImagesInGrid] = useState<Image[]>([]);
 
-export default function Index({
-  images,
-  LoadMore,
-}: {
-  images: Image[];
-  LoadMore: () => void;
-}) {
-  const [imagesInGrid, setImagesInGrid] = useState<Image[]>(images);
   const { setImageDetails } = useUserGalley();
 
-  useEffect(() => {
-    setImagesInGrid(images);
-  }, [images]);
-
-  function ChangeLikes(likes: Like[], sourceId: string, provider: string) {
-    setImagesInGrid(
-      imagesInGrid.map((imageInGrid) =>
-        `${sourceId}-${provider}` ==
-        `${imageInGrid.sourceId}-${imageInGrid.provider.name}`
-          ? { ...imageInGrid, likes }
-          : imageInGrid
-      )
-    );
-
-    setImageDetails((img: any) => {
-      return `${sourceId}-${provider}` == `${img?.sourceId}-${img?.provider?.name}`
-        ? { ...img, likes }
-        : img;
-    });
+  function AddImages(images: Image[]) {
+    setImagesInGrid((prevImagesInGrid) => [...prevImagesInGrid, ...images]);
   }
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      AddImages,
+      ClearImages: () => setImagesInGrid([]),
+    }),
+    []
+  );
+
+  const ChangeLikes = useCallback(
+    (likes: Like[], sourceId: string, provider: string) => {
+      setImagesInGrid((prevImagesInGrid) =>
+        prevImagesInGrid.map((imageInGrid) =>
+          `${sourceId}-${provider}` ==
+          `${imageInGrid.sourceId}-${imageInGrid.provider.name}`
+            ? { ...imageInGrid, likes }
+            : imageInGrid
+        )
+      );
+
+      setImageDetails((img: any) => {
+        return `${sourceId}-${provider}` ==
+          `${img?.sourceId}-${img?.provider?.name}`
+          ? { ...img, likes }
+          : img;
+      });
+    },
+    []
+  );
 
   function SeparateImagesInGrid({
     images,
@@ -50,7 +63,10 @@ export default function Index({
     images: Image[];
     cols: number;
   }) {
-    let columns: ImagesGrid[] = [];
+    let columns: {
+      colHeight: number;
+      images: Image[];
+    }[] = [];
 
     for (let index = 0; index < cols; index++) {
       columns = [
@@ -100,36 +116,34 @@ export default function Index({
     return document.body;
   }
 
-  const grid = useRef<any>();
+  const gridRef = useRef<any>();
 
   const ScrollableParent =
-    typeof window !== "undefined" && grid.current
-      ? getScrollParent(grid.current)
+    typeof window !== "undefined" && gridRef.current
+      ? getScrollParent(gridRef.current)
       : undefined;
 
   useEffect(() => {
-    if (grid.current && ScrollableParent) {
+    if (gridRef.current && ScrollableParent) {
       (ScrollableParent == document.body
         ? window
         : ScrollableParent
       ).addEventListener("scroll", () => {
-          try{
+        try {
           const parentRect = ScrollableParent.getBoundingClientRect();
-          const gridRect = grid.current.getBoundingClientRect();
+          const gridRect = gridRef.current.getBoundingClientRect();
           const distance = gridRect.height + gridRect.top - parentRect.height;
           if (distance < parentRect.height * 2) {
             LoadMore();
           }
-        } catch (e) {
-          
-        }
+        } catch (e) {}
       });
     }
-  }, [grid, ScrollableParent]);
+  }, [gridRef, ScrollableParent]);
 
   return (
     <>
-      <GridGallery ref={grid}>
+      <GridGallery ref={gridRef}>
         {SeparateImagesInGrid({ images: imagesInGrid, cols: 4 }).map(
           (column) => {
             return (
@@ -150,4 +164,5 @@ export default function Index({
       </GridGallery>
     </>
   );
-}
+});
+export default Index;

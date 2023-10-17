@@ -72,9 +72,7 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
   });
 
   newimages.sort((a, b) => {
-    return (
-      SeedStringRandomizer(a.sourceId) - SeedStringRandomizer(b.sourceId)
-    );
+    return SeedStringRandomizer(a.sourceId) - SeedStringRandomizer(b.sourceId);
   });
 
   res.status(200).json({
@@ -105,13 +103,16 @@ async function PUT(req: NextApiRequest, res: NextApiResponse) {
   if (collection.ownerId != req.user.id && req.user.role != "admin")
     throw new Error("access-denied");
 
-  collection = await collection.update({ link, name, description });
+  collection.name = name;
+  collection.description = description;
+  if (link != collection.link) collection.link = link;
+  await collection.save();
 
   res.status(200).json({ collection });
 }
 
 async function DELETE(req: NextApiRequest, res: NextApiResponse) {
-  let { link = "" } = req.body;
+  let { link = "" } = req.query;
 
   let collection = await Collection.findOne({ where: { link } });
 

@@ -9,7 +9,7 @@ export interface GlobalStylesProps {
     hover: {
       color: string;
     };
-  }
+  };
 }
 
 export const ThemeStyles = {
@@ -42,6 +42,12 @@ export const GlobalStyles = createGlobalStyle<{ theme: GlobalStylesProps }>`
     height: 100vh;
     background: ${({ theme }) => theme.body.bgColor};
     transition: all 0.20s linear;
+    overflow-y: hidden;
+  }
+  
+  #main-body{
+    height: 100vh;
+    overflow-y: auto;
   }
 
   .styled-scroll {
@@ -66,4 +72,4 @@ export const GlobalStyles = createGlobalStyle<{ theme: GlobalStylesProps }>`
             background: ${({ theme }) => theme.scrollbar.hover.color};
           }
   }
-  `;
+`;

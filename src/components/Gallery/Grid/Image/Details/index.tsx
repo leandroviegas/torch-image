@@ -5,7 +5,7 @@ import CommentForm from "./Comment/Form";
 import Image, { Comment as CommentType } from "@/types/Gallery";
 import useTheme from "@/hooks/useTheme";
 import GridGallery from "@/components/Gallery/Grid";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "@/services/api";
 import Link from "next/link";
 import { MdThumbUpAlt } from "react-icons/md";
@@ -20,8 +20,6 @@ function Index({ ImagePreDetails }: ImageDetailsProps) {
   const { data: session } = useSession();
   const { theme } = useTheme();
 
-  const [images, setImages] = useState<Image[]>([]);
-
   const [page, setPage] = useState<number>(1);
 
   const [loadStatus, setLoadStatus] = useState<
@@ -31,6 +29,8 @@ function Index({ ImagePreDetails }: ImageDetailsProps) {
   const [loadCommentsStatus, setLoadCommentsStatus] = useState<
     "load" | "loading" | "success" | "error"
   >("load");
+
+  const gridRef = useRef<any>()
 
   const [comments, setComments] = useState<CommentType[]>([]);
 
@@ -63,7 +63,7 @@ function Index({ ImagePreDetails }: ImageDetailsProps) {
     api
       .get("/images/search", { params: { query, page } })
       .then((resp) => {
-        setImages((imgs) => [...imgs, ...resp.data.images]);
+        gridRef.current?.AddImages(resp.data.images);
         setPage((p) => p + 1);
         setTimeout(() => {
           setLoadStatus("success");
@@ -79,7 +79,7 @@ function Index({ ImagePreDetails }: ImageDetailsProps) {
   }, [loadStatus]);
 
   useEffect(() => {
-    setImages([]);
+    gridRef.current.ClearImages()
     Search({ query: ImagePreDetails?.tags[0] || "" });
 
     LoadComments();
@@ -150,7 +150,7 @@ function Index({ ImagePreDetails }: ImageDetailsProps) {
           </div>
         </div>
         <GridGallery
-          images={images}
+        ref={gridRef}
           LoadMore={() => {
             setLoadStatus((ls) => (ls == "loading" ? ls : "load"));
           }}

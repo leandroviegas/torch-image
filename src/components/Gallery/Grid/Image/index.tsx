@@ -13,9 +13,7 @@ import Image from "next/image";
 import { ImageCard, ThemeStyles } from "./styles";
 import useAuth from "@/hooks/useAuth";
 import useUserGalley from "@/hooks/useUserGalley";
-import Collection from "./Collection";
-import { useState } from "react";
-import OpaqueBackground from "@/components/OpaqueBackground";
+import { memo } from "react";
 
 type ImageCardProps = ImageType & {
   ChangeLikes: (likes: Like[], sourceId: string, provider: string) => void;
@@ -43,7 +41,7 @@ const Index = ({
     setImageDetails,
     userCollections,
     setShowCollectionWindow,
-    setImageCollectionTab
+    setImageCollectionTab,
   } = useUserGalley();
 
   const inCollections = userCollections.some((userCollection) => {
@@ -135,7 +133,7 @@ const Index = ({
               </a>
             </div>
           </div>
-          <img src={previewLink} alt="" />
+          <img src={previewLink} alt={tags?.join(", ")} />
         </div>
         <div className="footer">
           <div className="buttons">
@@ -154,7 +152,7 @@ const Index = ({
                     tags,
                     sourceId,
                     sourceImageURL,
-                  })
+                  });
                   setShowCollectionWindow(true);
                 } else setPopup("SignIn");
               }}
@@ -191,4 +189,4 @@ const Index = ({
   );
 };
 
-export default Index;
+export default memo(Index);

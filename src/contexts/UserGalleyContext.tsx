@@ -64,7 +64,6 @@ export function UserGalleyProvider({
     if (showDetails == false && session?.user) LoadUserCollections();
   }, [showDetails, session]);
 
-
   return (
     <UserGalleyContext.Provider
       value={{

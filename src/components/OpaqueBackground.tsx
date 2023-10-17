@@ -1,5 +1,6 @@
 "use client";
-import { createRef, useEffect } from "react";
+import { useRouter } from "next/router";
+import { createRef, useEffect, useState } from "react";
 import styled from "styled-components";
 
 const OpaqueBackground = styled.div`
@@ -14,24 +15,42 @@ const OpaqueBackground = styled.div`
   overflow-y: auto;
 `;
 
-const Index = ({ children, BackgroundClick }: { children: React.ReactNode, BackgroundClick: () => void }) => {
-  const opbgRef = createRef<HTMLDivElement>(); 
+const Index = ({
+  children,
+  BackgroundClick,
+}: {
+  children: React.ReactNode;
+  BackgroundClick: () => void;
+}) => {
+  const opbgRef = createRef<HTMLDivElement>();
+
+  const router = useRouter();
+
+  const path = router.asPath;
+
+  const [initialPath] = useState<string>(path);
+
+  useEffect(() => {
+    if (initialPath != path) BackgroundClick();
+  }, [path]);
 
   function HandleBackgroundClick(event: MouseEvent) {
-    event.stopPropagation();
-    
-    if(event.target == opbgRef.current) {
+    if (event.target == opbgRef.current) {
       BackgroundClick();
     }
   }
 
   useEffect(() => {
-      opbgRef.current?.addEventListener("click", HandleBackgroundClick, true)
+    opbgRef.current?.addEventListener("click", HandleBackgroundClick, true);
 
     return () => {
-        opbgRef.current?.removeEventListener("click", HandleBackgroundClick, true)
-    }
-  }, [opbgRef])
+      opbgRef.current?.removeEventListener(
+        "click",
+        HandleBackgroundClick,
+        true
+      );
+    };
+  }, [opbgRef]);
 
   return <OpaqueBackground ref={opbgRef}>{children}</OpaqueBackground>;
 };

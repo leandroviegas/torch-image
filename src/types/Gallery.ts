@@ -43,7 +43,7 @@ export type Collection = {
   owner: {
     username: string;
     profilePicture: string;
-    userLink: string;
+    link: string;
   };
   images: {
     id: string;

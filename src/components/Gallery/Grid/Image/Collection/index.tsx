@@ -30,7 +30,10 @@ function Index({
     api
       .get("/collections", { params: { ownerId: session?.user?.id } })
       .then((resp) => {
-        setUserCollections(resp.data.collections);
+        setUserCollections(resp.data.collections.sort((a: Collection, b: Collection) =>
+        `${a.name}` < `${b.name}`
+          ? -1
+          : 1));
       });
   }
 

@@ -7,8 +7,9 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import type { AppProps } from "next/app";
 import type { Session } from "next-auth";
 
-import { Inter } from "next/font/google";
 import { UserGalleyProvider } from "@/contexts/UserGalleyContext";
+
+import { Inter } from "next/font/google";
 
 const inter = Inter({
   weight: "500",
@@ -22,7 +23,7 @@ export default function App({
   return (
     <AuthProvider>
       <SessionProvider session={session}>
-        <main className={inter.className}>
+        <main className={inter.className} id="main-body">
           <ThemeProvider>
             <UserGalleyProvider>
               <Component {...pageProps} />

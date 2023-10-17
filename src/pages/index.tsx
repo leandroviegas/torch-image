@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import styled from "styled-components";
 
@@ -14,8 +14,6 @@ import type { GetServerSidePropsContext } from "next";
 import Navbar from "@/components/Navbar";
 import Container from "@/components/Container";
 import GridGallery from "@/components/Gallery/Grid";
-
-import Image from "@/types/Gallery";
 
 import { FiSearch } from "react-icons/fi";
 
@@ -96,13 +94,13 @@ const Header = styled.header`
 export default function Home() {
   const [search, setSearch] = useState<string>("");
 
-  const [images, setImages] = useState<Image[]>([]);
-
   const [page, setPage] = useState<number>(1);
 
   const [loadStatus, setLoadStatus] = useState<
     "load" | "no-more-results" | "loading" | "success" | "error"
   >("load");
+
+  const gridRef = useRef<any>();
 
   function Search({ query }: { query: string }) {
     if (loadStatus == "loading") return;
@@ -112,11 +110,11 @@ export default function Home() {
     api
       .get("/images/search", { params: { query, page } })
       .then((resp) => {
-        if((resp.data.images || []).length == 0) {
+        if ((resp.data.images || []).length == 0) {
           setLoadStatus("no-more-results");
           return;
         }
-        setImages((imgs) => [...imgs, ...resp.data.images]);
+        gridRef.current?.AddImages(resp.data.images);
         setPage((p) => p + 1);
         setTimeout(() => {
           setLoadStatus("success");
@@ -153,8 +151,8 @@ export default function Home() {
                 <form
                   onSubmit={(evt) => {
                     evt.preventDefault();
-                    setImages([]);
-                    setLoadStatus("load")
+                    gridRef.current.ClearImages();
+                    setLoadStatus("load");
                     Search({ query: search });
                   }}
                 >
@@ -175,10 +173,14 @@ export default function Home() {
       </Header>
       <Container>
         <GridGallery
-          images={images}
-          LoadMore={() =>
-            setLoadStatus((ls) => (ls == "loading" || ls == "no-more-results" ? ls : "load"))
-          }
+          ref={gridRef}
+          LoadMore={useCallback(
+            () =>
+              setLoadStatus((ls) =>
+                ls == "loading" || ls == "no-more-results" ? ls : "load"
+              ),
+            []
+          )}
         />
       </Container>
     </>

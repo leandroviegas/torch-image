@@ -17,11 +17,17 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Features
 
-- [x] - Create account(Inputs)
+- [x] - Create account (credentials)
 - [x] - Google Sign
-- [x] - Like image
+- [x] - Like/Dislike image
 - [x] - Dark Mode
 - [x] - Image Details
 - [x] - Index image list
-- [ ] - Search for images (list collections)
-- [ ] - Save image to collections
+- [ ] - Search for images and list collections
+- [X] - Add image to collections
+- [X] - Collection page
+- [X] - Edit collection
+- [X] - Delete collection
+- [ ] - User page
+- [ ] - Edit user information
+- [ ] - Add more images databases
