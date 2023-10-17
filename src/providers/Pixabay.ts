@@ -73,6 +73,7 @@ async function PixabayImageDetails(id: string) {
   const cacheId = `${id}-Pixabay-Image`;
   const value = cacheData.get(cacheId);
   if (value) {
+    console.log("returning cached")
     return value;
   } else {
     let image = await pixabayApi
