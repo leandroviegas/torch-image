@@ -40,15 +40,14 @@ const Index = ({ isIndex = false }) => {
 
   const [search, setSearch] = useState<string>("");
 
-  if (query)
-    useEffect(() => {
-      setSearch(query as string);
-    }, [query]);
+  useEffect(() => {
+    if (query) setSearch(query as string);
+  }, [query]);
 
   return (
     <>
       {popup !== "" && (
-        <OpaqueBackground>
+        <OpaqueBackground BackgroundClick={() => setPopup("")}>
           <AuthPopup />
         </OpaqueBackground>
       )}

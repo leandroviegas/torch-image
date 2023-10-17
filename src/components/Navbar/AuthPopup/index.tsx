@@ -10,7 +10,6 @@ import SignUpForm from "./Forms/SignUp";
 import useTheme from "@/hooks/useTheme";
 import useAuth from "@/hooks/useAuth";
 import "animate.css";
-import Outclick from "@/components/OutClick";
 
 const Index = () => {
   const { theme } = useTheme();
@@ -18,47 +17,45 @@ const Index = () => {
   const { popup, setPopup } = useAuth();
 
   return (
-    <Outclick onOutClick={() => setPopup("")}>
-      <AuthPopup
-        className="animate__animated animate__fadeInDown animate__faster"
-        theme={ThemeStyles[theme]}
-      >
-        <div className="tab-buttons">
-          <button
-            className={`${popup == "SignIn" && "active"}`}
-            onClick={() => setPopup("SignIn")}
-          >
-            Sign In
-          </button>
-          <button
-            className={`${popup == "SignUp" && "active"}`}
-            onClick={() => setPopup("SignUp")}
-          >
-            Sign Up
-          </button>
-        </div>
-        <div className="separators">
-          <hr />
-          <span>Social Media</span>
-        </div>
-        <div className="social-auth">
-          <button onClick={() => signIn("google")} className="google-auth">
-            <FcGoogle size={20} /> Sign In with Google
-          </button>
-        </div>
-        <div className="separators">
-          <hr />
-          <span>Or</span>
-        </div>
-        <div>
-          {popup == "SignIn" ? (
-            <SignInForm ClosePopup={() => setPopup("")} />
-          ) : (
-            <SignUpForm ClosePopup={() => setPopup("")} />
-          )}
-        </div>
-      </AuthPopup>
-    </Outclick>
+    <AuthPopup
+      className="animate__animated animate__fadeInDown animate__faster"
+      theme={ThemeStyles[theme]}
+    >
+      <div className="tab-buttons">
+        <button
+          className={`${popup == "SignIn" && "active"}`}
+          onClick={() => setPopup("SignIn")}
+        >
+          Sign In
+        </button>
+        <button
+          className={`${popup == "SignUp" && "active"}`}
+          onClick={() => setPopup("SignUp")}
+        >
+          Sign Up
+        </button>
+      </div>
+      <div className="separators">
+        <hr />
+        <span>Social Media</span>
+      </div>
+      <div className="social-auth">
+        <button onClick={() => signIn("google")} className="google-auth">
+          <FcGoogle size={20} /> Sign In with Google
+        </button>
+      </div>
+      <div className="separators">
+        <hr />
+        <span>Or</span>
+      </div>
+      <div>
+        {popup == "SignIn" ? (
+          <SignInForm ClosePopup={() => setPopup("")} />
+        ) : (
+          <SignUpForm ClosePopup={() => setPopup("")} />
+        )}
+      </div>
+    </AuthPopup>
   );
 };
 

@@ -165,4 +165,7 @@ const Index = forwardRef<
     </>
   );
 });
+
+Index.displayName = "GridGallery";
+
 export default Index;
