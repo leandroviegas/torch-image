@@ -5,6 +5,7 @@ import { signIn } from 'next-auth/react';
 import api from '@/services/api';
 
 import FloatingLabelInput from '@/components/FloatingLabelInput';
+import { toast } from 'react-toastify';
 
 const Index = ({ ClosePopup }: { ClosePopup: () => void }) => {
     const [form, setForm] = useState<{ username: string, email: string, password: string }>({ username: "", email: "", password: "" })
@@ -12,7 +13,11 @@ const Index = ({ ClosePopup }: { ClosePopup: () => void }) => {
     const HandleSignUp = (event: React.FormEvent) => {
         event.preventDefault();
         api.post("/user", form).then(resp => {
-            signIn("credentials", { ...form, redirect: false }).then(ClosePopup)
+            signIn("credentials", { ...form, redirect: false }).then(ClosePopup).catch(err => {
+                toast(`Error to sign in: ${err}`, {
+                    type: "error",
+                }); 
+            })
         })
     }
 

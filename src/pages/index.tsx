@@ -16,6 +16,7 @@ import Container from "@/components/Container";
 import GridGallery from "@/components/Gallery/Grid";
 
 import { FiSearch } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 const Header = styled.header`
   height: 600px;
@@ -121,8 +122,11 @@ export default function Home() {
           setLoadStatus("success");
         }, 1000);
       })
-      .catch(() => {
+      .catch((err) => {
         setLoadStatus("error");
+        toast(`Error to load images: ${err}`, {
+          type: "error",
+        })
       });
   }
 
@@ -175,13 +179,10 @@ export default function Home() {
       <Container>
         <GridGallery
           ref={gridRef}
-          LoadMore={useCallback(
-            () =>
-              setLoadStatus((ls) =>
-                ls == "loading" || ls == "no-more-results" ? ls : "load"
-              ),
-            []
-          )}
+          LoadMore={() =>
+            setLoadStatus((ls) =>
+              ls == "loading" || ls == "no-more-results" ? ls : "load"
+            )}
         />
       </Container>
     </>

@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import { Collection } from "@/types/Gallery";
 import useUserGalley from "@/hooks/useUserGalley";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 function Index({ image }: { image: { sourceId: string; provider: string } }) {
   const { theme } = useTheme();
@@ -31,6 +32,11 @@ function Index({ image }: { image: { sourceId: string; provider: string } }) {
             `${a.name}` < `${b.name}` ? -1 : 1
           )
         );
+      })
+      .catch((error) => {
+        toast(`Error loading collections: ${error}`, {
+          type: "error",
+        });
       });
   }
 
@@ -59,7 +65,11 @@ function Index({ image }: { image: { sourceId: string; provider: string } }) {
       })
       .then((resp) => {
         LoadUserCollections();
-      });
+      }).catch((error) => {
+        toast(`Error editing collection: ${error}`, {
+          type: "error",
+        });
+      });;
   }
 
   return (

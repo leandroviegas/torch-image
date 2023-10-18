@@ -17,6 +17,7 @@ import Link from "next/link";
 
 import { HiCollection, HiUser } from "react-icons/hi";
 import { MdThumbUpAlt } from "react-icons/md";
+import { toast } from "react-toastify";
 
 interface ImageDetailsProps {
   ImagePreDetails: Image & { Like: () => void };
@@ -58,8 +59,11 @@ function Index({ ImagePreDetails }: ImageDetailsProps) {
         setComments(resp.data.image?.comments);
         setLoadCommentsStatus("success");
       })
-      .catch(() => {
+      .catch((error) => {
         setLoadCommentsStatus("error");
+        toast(`Error to load image details: ${error}`, {
+          type: "error",
+        });
       });
   }
 
@@ -83,8 +87,11 @@ function Index({ ImagePreDetails }: ImageDetailsProps) {
           setLoadStatus("success");
         }, 1000);
       })
-      .catch(() => {
+      .catch((error) => {
         setLoadStatus("error");
+        toast(`Error searching for results: ${error}`, {
+          type: "error",
+        });
       });
   }
 
@@ -160,7 +167,11 @@ function Index({ ImagePreDetails }: ImageDetailsProps) {
           <div className="comment-section">
             <div className="comment-list styled-scroll">
               {comments.length > 0 ? (
-                <CommentList image={ImagePreDetails} comments={comments} CallbackOnDelete={LoadComments} />
+                <CommentList
+                  image={ImagePreDetails}
+                  comments={comments}
+                  CallbackOnDelete={LoadComments}
+                />
               ) : (
                 <div className="no-comment">
                   <span>Be the first to comment</span>

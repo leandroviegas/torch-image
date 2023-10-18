@@ -15,6 +15,7 @@ import CommentForm from "./Form";
 import { Inter } from "next/font/google";
 import { useSession } from "next-auth/react";
 import useAuth from "@/hooks/useAuth";
+import { toast } from "react-toastify";
 
 const inter = Inter({
   weight: "500",
@@ -53,6 +54,10 @@ function Index({
       api.delete(`/image/comment`, { params: { commentId: id } }).then(() => {
         CallbackOnDelete();
         setAction("idle");
+      }).catch((err) => {
+        toast(`Error deleting comment: ${err}`, {
+          type: "error",
+        });
       });
     }
   }
@@ -64,6 +69,10 @@ function Index({
         .then(() => {
           CallbackOnDelete();
           setAction("idle");
+        }).catch((err) => {
+          toast(`Error editing comment: ${err}`, {
+            type: "error",
+          });
         });
     }
   }

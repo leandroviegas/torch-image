@@ -6,7 +6,7 @@ import FloatingLabelInput from "@/components/FloatingLabelInput";
 import { useEffect, useState } from "react";
 import api from "@/services/api";
 import linkfy from "@/utils/linkfy";
-import useUserGalley from "@/hooks/useUserGalley";
+import { toast } from "react-toastify";
 
 interface CreateCollectionFormProps {
   BackToCollections: () => void;
@@ -23,14 +23,21 @@ function Index({ BackToCollections }: CreateCollectionFormProps) {
 
   useEffect(() => {
     setLink(linkfy(name));
-  },[name])
+  }, [name]);
 
   function HandleCreateCollection(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    api.post("/collection", { name, description, link }).then((resp) => {
-      BackToCollections();
-    });
+    api
+      .post("/collection", { name, description, link })
+      .then((resp) => {
+        BackToCollections();
+      })
+      .catch((err) => {
+        toast(`Error to create collection: ${err}`, {
+          type: "error",
+        });
+      });
   }
 
   return (

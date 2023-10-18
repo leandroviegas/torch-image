@@ -9,6 +9,9 @@ import api from "@/services/api";
 import { MdClose, MdOutlineInsertComment } from "react-icons/md";
 
 import { Inter } from "next/font/google";
+import { useSession } from "next-auth/react";
+import useAuth from "@/hooks/useAuth";
+import { toast } from "react-toastify";
 
 const inter = Inter({
   weight: "500",
@@ -36,22 +39,34 @@ function CommentForm({
 }: CommentFormProps) {
   const { theme } = useTheme();
 
+  const { data: session } = useSession();
+
+  const { setPopup } = useAuth();
+
   const [content, setContent] = useState(preContent);
 
   function CommentHandler(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
 
-    api
-      .post("/image/comment", {
-        content,
-        provider,
-        identification,
-        referenceId,
-      })
-      .then((resp) => {
-        setContent("");
-        CommentSuccess();
-      });
+    if (!session?.user?.id) {
+      setPopup("SignIn");
+    } else {
+      api
+        .post("/image/comment", {
+          content,
+          provider,
+          identification,
+          referenceId,
+        })
+        .then((resp) => {
+          setContent("");
+          CommentSuccess();
+        }).catch((err) => {
+          toast(`Error to comment: ${err}`, {
+            type: "error",
+          });
+        });
+    }
   }
 
   return (
@@ -65,7 +80,13 @@ function CommentForm({
           className={`${inter.className} styled-scroll`}
           name="comment"
           value={content}
-          onChange={(evt) => setContent(evt.target.value)}
+          onChange={(evt) => {
+            if (!session?.user?.id) {
+              setPopup("SignIn");
+              return;
+            }
+            setContent(evt.target.value);
+          }}
           placeholder="Add a comment"
           rows={textareaRows}
         ></textarea>

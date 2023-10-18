@@ -13,6 +13,7 @@ import Image, { Collection } from "@/types/Gallery";
 import api from "@/services/api";
 import { useSession } from "next-auth/react";
 import CollectionWindow from "@/components/Gallery/Grid/Image/Collection";
+import { toast } from "react-toastify";
 
 type ImageWithLike = Image & { Like: () => void };
 
@@ -57,6 +58,10 @@ export function UserGalleyProvider({
       .get("/collections", { params: { ownerId: session?.user?.id } })
       .then((resp) => {
         setUserCollections(resp.data.collections);
+      }).catch((error) => {
+        toast(`Error loading collections: ${error}`, {
+          type: "error",
+        });
       });
   }
 

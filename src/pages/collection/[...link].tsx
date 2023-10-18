@@ -15,6 +15,7 @@ import useUserGalley from "@/hooks/useUserGalley";
 
 import { Inter } from "next/font/google";
 import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 const inter = Inter({
   weight: "500",
@@ -235,7 +236,6 @@ function Collection() {
 
   const gridRef = useRef<any>();
 
-
   useEffect(() => {
     gridRef.current?.SetImages(collection?.images || []);
   }, [collection?.images]);
@@ -250,12 +250,22 @@ function Collection() {
           setCollection(res.data?.collection);
           setCollectionForm(res.data?.collection);
           setStatus("success");
+        })
+        .catch((err) => {
+          setStatus("error");
+          toast(`Error loading collection: ${err}`, {
+            type: "error",
+          });
         });
     }
   }
 
   function HandleEdit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    const id = toast("Saving changes", {
+      isLoading: true,
+    });
 
     api
       .put("/collection", {
@@ -264,8 +274,25 @@ function Collection() {
         name: collectionForm?.name,
       })
       .then((res) => {
+        if (toast.isActive(id)) {
+          toast.update(id, {
+            render: "Changes saved",
+            type: "success",
+            isLoading: false,
+            autoClose: 2000,
+          });
+        } else {
+          toast("Saving changes", {
+            type: "success",
+            autoClose: 2000,
+          });
+        }
         setEdit(false);
         LoadCollection();
+      }).catch((err) => {
+        toast(`Error saving changes: ${err}`, {
+          type: "error",
+        });
       });
   }
 
@@ -278,6 +305,11 @@ function Collection() {
       })
       .then((res) => {
         router.push("/");
+      })
+      .catch((err) => {
+        toast(`Error deleting collection: ${err}`, {
+          type: "error",
+        });
       });
   }
 

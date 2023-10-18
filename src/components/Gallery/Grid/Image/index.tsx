@@ -14,6 +14,7 @@ import { ImageCard, ThemeStyles } from "./styles";
 import useAuth from "@/hooks/useAuth";
 import useUserGalley from "@/hooks/useUserGalley";
 import { memo } from "react";
+import { toast } from "react-toastify";
 
 type ImageCardProps = ImageType & {
   ChangeLikes: (likes: Like[], sourceId: string, provider: string) => void;
@@ -84,6 +85,9 @@ const Index = ({
         })
         .catch((e) => {
           console.error(e);
+          toast(`Error liking the image: ${e}`, {
+            type: "error",
+          });
         })
         .finally(() => {
           ChangeLikes(lastLikes, sourceId, provider.name);
