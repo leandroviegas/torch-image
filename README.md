@@ -23,7 +23,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - [x] - Dark Mode
 - [x] - Image Details
 - [x] - Index image list
-- [ ] - Edit/Apagar comentários
+- [X] - Edit/Apagar comentários
 - [ ] - Search for images and list collections
 - [x] - Add image to collections
 - [x] - Collection page

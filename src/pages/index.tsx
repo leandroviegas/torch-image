@@ -68,6 +68,7 @@ const Header = styled.header`
             padding: 10px 15px;
             font-size: 20px;
             width: 100%;
+            outline: none;
           }
 
           button.send {

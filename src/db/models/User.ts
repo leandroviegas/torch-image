@@ -36,6 +36,9 @@ User.init(
       type: DataTypes.STRING,
       unique: true,
       allowNull: false,
+      validate: {
+        isEmail: true,
+      }
     },
     profilePicture: {
       type: DataTypes.STRING,
@@ -50,8 +53,8 @@ User.init(
       allowNull: false,
       validate: {
         len: {
-          args: [3, 24],
-          msg: "link-must-be-3-24-len",
+          args: [3, 30],
+          msg: "link-must-be-3-30-len",
         },
       },
     },

@@ -33,10 +33,9 @@ const Index = ({ isIndex = false }) => {
 
   const loading = status === "loading";
 
-  const [dropdowns, setDropdowns] = useState<{ [key: string]: boolean }>({
-    user: false,
-    collections: false,
-  });
+  
+  const [userDropdown, setUserDropdown] = useState<boolean>();
+  const [collectionsDropdown, setCollectionsDropdown] = useState<boolean>();
 
   const router = useRouter();
 
@@ -99,20 +98,20 @@ const Index = ({ isIndex = false }) => {
               <li>
                 <Link href="/">Explore</Link>
               </li>
-              <>
+              {(!loading && session?.user.id) && (
                 <OutClick
                   onOutClick={() =>
-                    setDropdowns({ ...dropdowns, collections: false })
+                    setCollectionsDropdown(false)
                   }
                 >
                   <li
                     onClick={() =>
-                      setDropdowns({ ...dropdowns, collections: true })
+                      setCollectionsDropdown(true)
                     }
                   >
                     <span>
                       Your collections <TiArrowSortedDown />
-                      {dropdowns.collections && (
+                      {collectionsDropdown && (
                         <div className="dropdown-menu">
                           {userCollections?.length !== 0 ? (
                             userCollections.map((collection) => (
@@ -133,7 +132,7 @@ const Index = ({ isIndex = false }) => {
                     </span>
                   </li>
                 </OutClick>
-              </>
+              )}
               <li>
                 <HiOutlineLightBulb size={22} onClick={SwitchTheme} />
               </li>
@@ -155,12 +154,11 @@ const Index = ({ isIndex = false }) => {
                 <>
                   <OutClick
                     onOutClick={() => {
-                      console.log("aoba")
-                      setDropdowns(prevDropdowns =>({ ...prevDropdowns, user: false }))
+                      setUserDropdown(false);
                     }}
                   >
                     <li
-                      onClick={() => setDropdowns(prevDropdowns =>({ ...prevDropdowns, user: true }))}
+                      onClick={() => setUserDropdown(true)}
                     >
                       <img
                         className="profilePicture"
@@ -170,7 +168,7 @@ const Index = ({ isIndex = false }) => {
                       />
                       <span>
                         {session?.user?.username} <TiArrowSortedDown />
-                        {dropdowns.user && (
+                        {userDropdown && (
                           <div className="dropdown-menu">
                             <button onClick={() => signOut()} className="item">
                               Sign Out

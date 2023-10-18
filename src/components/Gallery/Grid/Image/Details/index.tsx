@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 
 import GridGallery from "@/components/Gallery/Grid";
-import Comment from "./Comment";
-import CommentForm from "./Comment/Form";
+import CommentList from "./CommentList";
+import CommentForm from "./CommentList/Comment/Form";
 import { ImageDetails, ThemeStyles } from "./styles";
 
 import Image, { Comment as CommentType } from "@/types/Gallery";
@@ -46,7 +46,7 @@ function Index({ ImagePreDetails }: ImageDetailsProps) {
     if (loadCommentsStatus == "loading") return;
 
     setLoadCommentsStatus("loading");
-    setComments([]);
+
     api
       .get("/image/details", {
         params: {
@@ -94,6 +94,7 @@ function Index({ ImagePreDetails }: ImageDetailsProps) {
 
   useEffect(() => {
     gridRef.current.ClearImages();
+    setComments([]);
     Search({ query: ImagePreDetails?.tags[0] || "" });
 
     LoadComments();
@@ -159,9 +160,7 @@ function Index({ ImagePreDetails }: ImageDetailsProps) {
           <div className="comment-section">
             <div className="comment-list styled-scroll">
               {comments.length > 0 ? (
-                comments?.map((comment, index) => (
-                  <Comment {...comment} key={`${comment.id}-${index}`} />
-                ))
+                <CommentList image={ImagePreDetails} comments={comments} CallbackOnDelete={LoadComments} />
               ) : (
                 <div className="no-comment">
                   <span>Be the first to comment</span>

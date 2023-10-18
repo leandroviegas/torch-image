@@ -25,6 +25,7 @@ type Image = {
 export type Comment = {
   id?: string;
   content: string;
+  referenceId: string;
   createdAt: string;
   updatedAt: string;
   user: {

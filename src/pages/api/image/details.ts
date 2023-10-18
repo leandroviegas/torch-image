@@ -19,7 +19,7 @@ export default catchAsyncErrors(
           attributes: ["username", "profilePicture", "link", "id"],
           through: {
             as: "image_comment",
-            attributes: ["content", "createdAt", "updatedAt", "id"],
+            attributes: ["content", "createdAt", "updatedAt", "referenceId", "id"],
           },
         },
       });
@@ -27,8 +27,11 @@ export default catchAsyncErrors(
       res.status(200).json({
         image: {
           ...image[0],
-          comments: image.map((img: any) => img.comments).filter((comment: any) => comment.image_comment.content != null).map((comment: any) => ({
-            id: comment.id,
+          comments: image.map((img: any) => img.comments)
+          .filter((comment: any) => comment.image_comment.content != null)
+          .map((comment: any) => ({
+            id: comment.image_comment.id,
+            referenceId: comment.image_comment.referenceId,
             content: comment.image_comment.content,
             createdAt: comment.image_comment.createdAt,
             updatedAt: comment.image_comment.updatedAt,

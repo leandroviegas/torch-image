@@ -51,6 +51,7 @@ export const Navbar = styled.nav<NavbarProps>`
         font-size: 16px;
         padding: 6px 8px;
         border-radius: 5px;
+        outline: none;
       }
 
       input::placeholder {

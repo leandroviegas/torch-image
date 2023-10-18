@@ -5,6 +5,7 @@ class Comment extends Model {
   declare id: string;
   declare UserId: string;
   declare ImageId: string;
+  declare referenceId: string;
   declare content: string;
   declare createdAt: string;
   declare updatedAt: string;
@@ -21,6 +22,12 @@ Comment.init(
     content: {
       type: DataTypes.STRING,
       defaultValue: "",
+      validate: {
+        len: {
+          args: [3, 800],
+          msg: "content-must-be-3-800-len",
+        },
+      },
     },
   },
   {
@@ -32,5 +39,7 @@ Comment.init(
     freezeTableName: true,
   }
 );
+
+Comment.belongsTo(Comment, { as: "parent", foreignKey: "referenceId" });
 
 export default Comment;

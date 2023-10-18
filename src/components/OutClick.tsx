@@ -15,25 +15,22 @@ function OutClick({
       : child
   );
 
-  const HandleClickOutside = useCallback(
-    (event: any) => {
-      let outClickElements = 0;
+  const HandleClickOutside = useCallback((event: any) => {
+    let outClickElements = 0;
 
-      components.forEach((element) => {
-        if (!element?.ref?.current?.contains(event.target)) outClickElements++;
-      });
+    components.forEach((element) => {
+      if (!element?.ref?.current?.contains(event.target)) outClickElements++;
+    });
 
-      if (
-        (event.offsetX > event.target?.clientWidth ||
-          event.offsetY > event.target?.clientHeight) &&
-        ignoreScrollBars
-      )
-        return;
+    if (
+      (event.offsetX > event.target?.clientWidth ||
+        event.offsetY > event.target?.clientHeight) &&
+      ignoreScrollBars
+    )
+      return;
 
-      if (components.length <= outClickElements) onOutClick();
-    },
-    [components, ignoreScrollBars, onOutClick]
-  );
+    if (components.length <= outClickElements) onOutClick();
+  }, [components, onOutClick, ignoreScrollBars]);
 
   useEffect(() => {
     document.addEventListener("mousedown", HandleClickOutside, true);
@@ -43,8 +40,6 @@ function OutClick({
     };
   }, [HandleClickOutside]);
 
-  console.log(components)
-  
   return <>{components}</>;
 }
 
