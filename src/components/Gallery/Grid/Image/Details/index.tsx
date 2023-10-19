@@ -18,6 +18,8 @@ import Link from "next/link";
 import { HiCollection, HiUser } from "react-icons/hi";
 import { MdThumbUpAlt } from "react-icons/md";
 import { toast } from "react-toastify";
+import usePromise from "@/hooks/usePromise";
+import { BiLoaderCircle } from "react-icons/bi";
 
 interface ImageDetailsProps {
   ImagePreDetails: Image & { Like: () => void };
@@ -35,64 +37,71 @@ function Index({ ImagePreDetails }: ImageDetailsProps) {
     "load" | "loading" | "success" | "error"
   >("success");
 
-  const [loadCommentsStatus, setLoadCommentsStatus] = useState<
-    "load" | "loading" | "success" | "error"
-  >("load");
-
   const gridRef = useRef<any>();
 
   const [comments, setComments] = useState<CommentType[]>([]);
 
-  function LoadComments() {
-    if (loadCommentsStatus == "loading") return;
+  const [promises, execPromise] = usePromise({
+    "comments-load": {
+      status: "idle",
+    },
+  });
 
-    setLoadCommentsStatus("loading");
+  const [initialLoad, setInitialLoad] = useState<boolean>(false);
 
-    api
-      .get("/image/details", {
+  async function LoadComments() {
+    const result = await execPromise(
+      api.get("/image/details", {
         params: {
           identification: ImagePreDetails.sourceId,
           provider: ImagePreDetails.provider.name,
         },
-      })
-      .then((resp) => {
-        setComments(resp.data.image?.comments);
-        setLoadCommentsStatus("success");
-      })
-      .catch((error) => {
-        setLoadCommentsStatus("error");
-        toast(`Error to load image details: ${error}`, {
-          type: "error",
-        });
+      }),
+      "comments-load"
+    );
+
+    if (result.status === "success") {
+      setComments(result.response?.data?.image.comments || []);
+    }
+
+    if (result.status === "error") {
+      toast(`Error loading image details:\n ${result.error}`, {
+        type: "error",
       });
+    }
   }
 
-  function Search({ query }: { query: string }) {
+  async function Search({ query }: { query: string }) {
     if (loadStatus == "loading") return;
 
     setLoadStatus("loading");
 
-    api
-      .get("/images/search", { params: { query, page } })
-      .then((resp) => {
-        gridRef.current?.AddImages(
-          resp.data?.images?.filter(
-            (image: Image) =>
-              `${image.sourceId}-${image.provider.name}` !=
-              `${ImagePreDetails.sourceId}-${ImagePreDetails.provider.name}`
-          ) || []
-        );
-        setPage((p) => p + 1);
-        setTimeout(() => {
-          setLoadStatus("success");
-        }, 1000);
-      })
-      .catch((error) => {
-        setLoadStatus("error");
-        toast(`Error searching for results: ${error}`, {
-          type: "error",
-        });
+    const result = await execPromise(
+      api.get("/images/search", { params: { query, page } }),
+      "search"
+    );
+
+    if (result.status === "success") {
+      gridRef.current?.AddImages(
+        result.response?.data?.images?.filter(
+          (image: Image) =>
+            `${image.sourceId}-${image.provider.name}` !=
+            `${ImagePreDetails.sourceId}-${ImagePreDetails.provider.name}`
+        ) || []
+      );
+      setPage((p) => p + 1);
+      setInitialLoad(true);
+      setTimeout(() => {
+        setLoadStatus("success");
+      }, 1000);
+    }
+
+    if (result.status === "error") {
+      setLoadStatus("error");
+      toast(`Error loading images:\n ${result.error}`, {
+        type: "error",
       });
+    }
   }
 
   useEffect(() => {
@@ -166,16 +175,28 @@ function Index({ ImagePreDetails }: ImageDetailsProps) {
           </div>
           <div className="comment-section">
             <div className="comment-list styled-scroll">
-              {comments.length > 0 ? (
-                <CommentList
-                  image={ImagePreDetails}
-                  comments={comments}
-                  CallbackOnDelete={LoadComments}
-                />
-              ) : (
+              {promises["comments-load"].status == "success" ? (
+                comments.length > 0 ? (
+                  <CommentList
+                    image={ImagePreDetails}
+                    comments={comments}
+                    CallbackOnDelete={LoadComments}
+                  />
+                ) : (
+                  <div className="no-comment">
+                    <span>Be the first to comment</span>
+                  </div>
+                )
+              ) : promises["comments-load"].status == "error" ? (
                 <div className="no-comment">
-                  <span>Be the first to comment</span>
+                  <span>Could not load comments</span>
                 </div>
+              ) : (
+                promises["comments-load"].status == "loading" && (
+                  <div className="no-comment">
+                    <span>Loading...</span>
+                  </div>
+                )
               )}
             </div>
             <div className="comment-form">
@@ -188,6 +209,11 @@ function Index({ ImagePreDetails }: ImageDetailsProps) {
           </div>
         </div>
       </div>
+      {!initialLoad && (
+        <div className="loading">
+          <BiLoaderCircle />
+        </div>
+      )}
       <GridGallery
         ref={gridRef}
         LoadMore={() => {

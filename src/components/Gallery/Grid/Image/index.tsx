@@ -15,6 +15,7 @@ import useAuth from "@/hooks/useAuth";
 import useUserGalley from "@/hooks/useUserGalley";
 import { memo } from "react";
 import { toast } from "react-toastify";
+import usePromise from "@/hooks/usePromise";
 
 type ImageCardProps = ImageType & {
   ChangeLikes: (likes: Like[], sourceId: string, provider: string) => void;
@@ -51,50 +52,55 @@ const Index = ({
     );
   });
 
+  const [promises, execPromise] = usePromise({
+    "image-like/dislike": {
+      status: "idle",
+    },
+  });
+
   async function Like() {
+    if (!session?.user?.id) return setPopup("SignIn");
+
     let lastLikes = likes;
 
-    if (session?.user?.id) {
-      if (lastLikes.find((like) => like.UserId == session?.user?.id))
-        ChangeLikes(
-          lastLikes.filter((like) => like.UserId != session?.user?.id),
-          sourceId,
-          provider.name
-        );
-      else
-        ChangeLikes(
-          [
-            ...lastLikes,
-            {
-              UserId: session.user.id,
-              profilePicture: session?.user?.profilePicture,
-              username: session?.user?.username,
-            },
-          ],
-          sourceId,
-          provider.name
-        );
+    if (lastLikes.find((like) => like.UserId == session?.user?.id))
+      ChangeLikes(
+        lastLikes.filter((like) => like.UserId != session?.user?.id),
+        sourceId,
+        provider.name
+      );
+    else
+      ChangeLikes(
+        [
+          ...lastLikes,
+          {
+            UserId: session.user.id,
+            profilePicture: session?.user?.profilePicture,
+            username: session?.user?.username,
+          },
+        ],
+        sourceId,
+        provider.name
+      );
 
-      await api
-        .put("/image/like", {
-          identification: sourceId,
-          provider: provider.name,
-        })
-        .then((res) => {
-          lastLikes = res.data.image.likes;
-        })
-        .catch((e) => {
-          console.error(e);
-          toast(`Error liking the image: ${e}`, {
-            type: "error",
-          });
-        })
-        .finally(() => {
-          ChangeLikes(lastLikes, sourceId, provider.name);
-        });
-    } else {
-      setPopup("SignIn");
+    const result = await execPromise(
+      api.put("/image/like", {
+        identification: sourceId,
+        provider: provider.name,
+      }),
+      "image-like/dislike"
+    );
+
+    if (result.status === "success") {
+      lastLikes = result.response?.data?.image?.likes;
     }
+
+    if (result.status === "error") {
+      toast(`Error liking the image:\n ${result.error}`, {
+        type: "error",
+      });
+    }
+    ChangeLikes(lastLikes, sourceId, provider.name);
   }
 
   return (

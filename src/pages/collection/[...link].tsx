@@ -16,6 +16,8 @@ import useUserGalley from "@/hooks/useUserGalley";
 import { Inter } from "next/font/google";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
+import usePromise from "@/hooks/usePromise";
+import { BiLoaderCircle } from "react-icons/bi";
 
 const inter = Inter({
   weight: "500",
@@ -217,22 +219,27 @@ function Collection() {
 
   const [edit, setEdit] = useState<boolean>(false);
 
+  const [initialLoad, setInitialLoad] = useState<boolean>(false);
+
   const [collectionForm, setCollectionForm] = useState<
-    Omit<Collection, "images">
+    Omit<Collection, "images" | "owner">
   >({
     description: "",
     link: "",
     name: "",
-    owner: {
-      link: "",
-      profilePicture: "",
-      username: "",
-    },
   });
 
-  const [status, setStatus] = useState<
-    "load" | "loading" | "success" | "error"
-  >("load");
+  const [promises, execPromise] = usePromise({
+    "collection-load": {
+      status: "idle",
+    },
+    "collection-edit": {
+      status: "idle",
+    },
+    "collection-delete": {
+      status: "idle",
+    },
+  });
 
   const gridRef = useRef<any>();
 
@@ -240,77 +247,118 @@ function Collection() {
     gridRef.current?.SetImages(collection?.images || []);
   }, [collection?.images]);
 
-  function LoadCollection() {
-    if (link && status != "loading") {
-      setStatus("loading");
+  async function LoadCollection() {
+    if (!link) return;
 
-      api
-        .get("/collection", { params: { link: (link as string[])[0] || "" } })
-        .then((res) => {
-          setCollection(res.data?.collection);
-          setCollectionForm(res.data?.collection);
-          setStatus("success");
-        })
-        .catch((err) => {
-          setStatus("error");
-          toast(`Error loading collection: ${err}`, {
-            type: "error",
-          });
+    const result = await execPromise(
+      api.get("/collection", { params: { link: (link as string[])[0] || "" } }),
+      "collection-load"
+    );
+
+    if (result.status === "success") {
+      setCollection(result.response?.data?.collection);
+      setCollectionForm(result.response?.data?.collection);
+      setInitialLoad(true);
+    }
+
+    if (result.status === "error") {
+      console.log(result.error)
+      if(result.error == "collection-not-found") {
+        toast(`Collection not found`, {
+          type: "error",
         });
+        router.push("/");
+      return;
+      }
+      toast(`Error loading collection:\n ${result.error}`, {
+        type: "error",
+      });
     }
   }
 
-  function HandleEdit(event: React.FormEvent<HTMLFormElement>) {
+  async function HandleEdit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const id = toast("Saving changes", {
+    const toastId = toast("Saving changes", {
       isLoading: true,
     });
 
-    api
-      .put("/collection", {
+    const result = await execPromise(
+      api.put("/collection", {
         description: collectionForm?.description,
         link: collectionForm?.link,
         name: collectionForm?.name,
-      })
-      .then((res) => {
-        if (toast.isActive(id)) {
-          toast.update(id, {
-            render: "Changes saved",
-            type: "success",
-            isLoading: false,
-            autoClose: 2000,
-          });
-        } else {
-          toast("Saving changes", {
-            type: "success",
-            autoClose: 2000,
-          });
-        }
-        setEdit(false);
-        LoadCollection();
-      }).catch((err) => {
-        toast(`Error saving changes: ${err}`, {
-          type: "error",
-        });
+      }),
+      "collection-edit"
+    );
+
+    if (result.status === "success") {
+      setEdit(false);
+      LoadCollection();
+    }
+
+    const toastContent = {
+      message:
+        result.status === "success"
+          ? "Changes saved"
+          : `Error saving changes:\n ${result.error}`,
+      type: result.status as "success" | "error",
+    };
+
+    if (toast.isActive(toastId)) {
+      toast.update(toastId, {
+        render: toastContent.message,
+        type: toastContent.type,
+        isLoading: false,
+        autoClose: 2000,
       });
+    } else {
+      toast(toastContent.message, {
+        type: toastContent.type,
+        autoClose: 2000,
+      });
+    }
   }
 
-  function HandleDelete() {
-    api
-      .delete("/collection", {
+  async function HandleDelete() {
+    const toastId = toast("Deleting collection", {
+      isLoading: true,
+    });
+
+    const result = await execPromise(
+      api.delete("/collection", {
         params: {
           link: collection?.link,
         },
-      })
-      .then((res) => {
-        router.push("/");
-      })
-      .catch((err) => {
-        toast(`Error deleting collection: ${err}`, {
-          type: "error",
-        });
+      }),
+      "collection-delete"
+    );
+
+    if (result.status === "success") {
+      router.push("/");
+    }
+
+    const toastContent = {
+      message:
+        result.status === "success"
+          ? "Collection deleted"
+          : `Error deleting collection:\n ${result.error}`,
+      type: result.status as "success" | "error",
+    };
+
+    if (toast.isActive(toastId)) {
+      toast.update(toastId, {
+        render: toastContent.message,
+        type: toastContent.type,
+        isLoading: false,
+        autoClose: 2000,
       });
+    } else {
+      toast(toastContent.message, {
+        type: toastContent.type,
+        autoClose: 2000,
+      });
+    }
   }
 
   useEffect(() => {
@@ -342,6 +390,12 @@ function Collection() {
   useEffect(() => {
     LoadCollection();
   }, [link]);
+
+  useEffect(() => {
+    if (edit == false) {
+      setCollectionForm(collection || { description: "", link: "", name: "" });
+    }
+  }, [edit, collection]);
 
   return (
     <>
@@ -403,10 +457,8 @@ function Collection() {
                       </button>
                     </div>
                   )}
-                  <h1 className="collection-name">{collectionForm?.name}</h1>
-                  {collectionForm?.description && (
-                    <p>{collectionForm?.description}</p>
-                  )}
+                  <h1 className="collection-name">{collection?.name}</h1>
+                  {collection?.description && <p>{collection?.description}</p>}
                 </div>
               )}
               <button className="user-profile">
@@ -423,6 +475,11 @@ function Collection() {
                 <span>{collection.owner.username}</span>
               </button>
             </CollectionHeader>
+            {!initialLoad && (
+              <div className="loading">
+                <BiLoaderCircle />
+              </div>
+            )}
             <GridGallery ref={gridRef} LoadMore={() => {}} />
           </>
         )}

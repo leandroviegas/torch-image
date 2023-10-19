@@ -12,6 +12,7 @@ import { Inter } from "next/font/google";
 import { useSession } from "next-auth/react";
 import useAuth from "@/hooks/useAuth";
 import { toast } from "react-toastify";
+import usePromise from "@/hooks/usePromise";
 
 const inter = Inter({
   weight: "500",
@@ -45,27 +46,36 @@ function CommentForm({
 
   const [content, setContent] = useState(preContent);
 
-  function CommentHandler(evt: React.FormEvent<HTMLFormElement>) {
+  const [promises, execPromise] = usePromise({
+    "comment-create": {
+      status: "idle",
+    }
+  });
+
+  async function CommentHandler(evt: React.FormEvent<HTMLFormElement>) {
     evt.preventDefault();
 
-    if (!session?.user?.id) {
-      setPopup("SignIn");
-    } else {
-      api
-        .post("/image/comment", {
-          content,
-          provider,
-          identification,
-          referenceId,
-        })
-        .then((resp) => {
-          setContent("");
-          CommentSuccess();
-        }).catch((err) => {
-          toast(`Error to comment: ${err}`, {
-            type: "error",
-          });
-        });
+    if (!session?.user?.id) return setPopup("SignIn");
+
+    const result = await execPromise(
+      api.post("/image/comment", {
+        content,
+        provider,
+        identification,
+        referenceId,
+      }),
+      "comment-create"
+    );
+
+    if (result.status === "success") {
+      setContent("");
+      CommentSuccess();
+    }
+
+    if (result.status === "error") {
+      toast(`Error to comment:\n ${result.error}`, {
+        type: "error",
+      });
     }
   }
 

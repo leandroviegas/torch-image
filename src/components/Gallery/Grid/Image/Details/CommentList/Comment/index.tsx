@@ -16,6 +16,7 @@ import { Inter } from "next/font/google";
 import { useSession } from "next-auth/react";
 import useAuth from "@/hooks/useAuth";
 import { toast } from "react-toastify";
+import usePromise from "@/hooks/usePromise";
 
 const inter = Inter({
   weight: "500",
@@ -43,37 +44,54 @@ function Index({
 
   const [newContent, setNewContent] = useState(content);
 
+  const [promises, execPromise] = usePromise({
+    "comment-delete": {
+      status: "idle",
+    },
+    "comment-edit": {
+      status: "idle",
+    },
+  });
+
   useEffect(() => {
     if (action === "edit") {
       setNewContent(content);
     }
   }, [action, content]);
 
-  function HandleDeleteComment() {
-    if (id) {
-      api.delete(`/image/comment`, { params: { commentId: id } }).then(() => {
-        CallbackOnDelete();
-        setAction("idle");
-      }).catch((err) => {
-        toast(`Error deleting comment: ${err}`, {
-          type: "error",
-        });
+  async function HandleDeleteComment() {
+    const result = await execPromise(
+      api.delete(`/image/comment`, { params: { commentId: id } }),
+      "comment-delete"
+    );
+
+    if (result.status === "success") {
+      CallbackOnDelete();
+      setAction("idle");
+    }
+
+    if (result.status === "error") {
+      toast(`Error deleting comment:\n ${result.error}`, {
+        type: "error",
       });
     }
   }
 
-  function HandleEditComment() {
-    if (id) {
-      api
-        .put(`/image/comment`, { commentId: id, content: newContent })
-        .then(() => {
-          CallbackOnDelete();
-          setAction("idle");
-        }).catch((err) => {
-          toast(`Error editing comment: ${err}`, {
-            type: "error",
-          });
-        });
+  async function HandleEditComment() {
+    const result = await execPromise(
+      api.put(`/image/comment`, { commentId: id, content: newContent }),
+      "comment-edit"
+    );
+
+    if (result.status === "success") {
+      CallbackOnDelete();
+      setAction("idle");
+    }
+
+    if (result.status === "error") {
+      toast(`Error editing comment:\n ${result.error}`, {
+        type: "error",
+      });
     }
   }
 
@@ -131,7 +149,7 @@ function Index({
           <button
             onClick={() => {
               if (session?.user.id == user.id) setAction("reply");
-              else setPopup("SignIn")
+              else setPopup("SignIn");
             }}
           >
             <MdOutlineInsertComment /> Reply

@@ -23,7 +23,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - [x] - Dark Mode
 - [x] - Image Details
 - [x] - Index image list
-- [X] - Edit/Apagar comentários
+- [x] - Edit/Apagar comentários
 - [ ] - Search for images and list collections
 - [x] - Add image to collections
 - [x] - Collection page
@@ -40,13 +40,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - [x] - Comment color
 - [x] - be the first to comment
 - [x] - Comment input using different typography
-- [ ] - Load circles
-- [ ] - Forms validators
-- [ ] - Error api request handler
+- [x] - Load circles
+- [x] - Forms validators
+- [x] - Not found collection
+- [x] - Error api request handler
 - [x] - Add to collection image details
 - [x] - recomended images not show own
-- [ ] - Not found collection
-- [ ] - Related images force load
-- [ ] - Type of image in filter
 - [x] - Add collection list navbar
 - [x] - Refresh reseting visual content

@@ -25,7 +25,7 @@ Comment.init(
       validate: {
         len: {
           args: [3, 800],
-          msg: "content-must-be-3-800-len",
+          msg: "content/must-be-3-800-len",
         },
       },
     },

@@ -29,15 +29,17 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
     ],
   });
 
+  if(!collection) throw new Error("collection-not-found");
+
   const collectionJson = collection?.toJSON();
 
   const images = await ImagesDetails(
-    collectionJson.images.map((image: any) => image.identification)
+    collectionJson?.images?.map((image: any) => image.identification)
   );
 
   const imagesInfo = await Image.findAll({
     where: {
-      identification: images.map(
+      identification: images?.map(
         (image) => `${image.sourceId}-${image.provider.name}`
       ),
     },

@@ -28,7 +28,7 @@ User.init(
       validate: {
         len: {
           args: [3, 24],
-          msg: "username-must-be-3-24-len",
+          msg: "username/must-be-3-24-len",
         },
       },
     },
@@ -54,7 +54,7 @@ User.init(
       validate: {
         len: {
           args: [3, 30],
-          msg: "link-must-be-3-30-len",
+          msg: "link/must-be-3-30-len",
         },
       },
     },

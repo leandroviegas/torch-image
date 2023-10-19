@@ -1,5 +1,5 @@
 "use client";
-import {
+import React, {
   useState,
   useEffect,
   useRef,
@@ -16,8 +16,8 @@ import useUserGalley from "@/hooks/useUserGalley";
 
 const Index = forwardRef<
   { AddImages: (images: Image[]) => void; ClearImages: () => void },
-  { LoadMore: () => void }
->(({ LoadMore }, ref) => {
+  { LoadMore: () => void; loading?: boolean }
+>(({ LoadMore}, ref) => {
   const [imagesInGrid, setImagesInGrid] = useState<Image[]>([]);
 
   const { setImageDetails } = useUserGalley();
@@ -27,17 +27,24 @@ const Index = forwardRef<
   }
 
   function SetImages(images: Image[]) {
-    setImagesInGrid(prevImagesInGrid =>[...prevImagesInGrid.filter((image) => {
-      return images.some((img) => {
-        return `${image.sourceId}-${image.provider.name}` ==
-          `${img.sourceId}-${img.provider.name}`;
-      })
-    }), ...images.filter((image) => {
-      return !prevImagesInGrid.some((img) => {
-        return `${image.sourceId}-${image.provider.name}` ==
-          `${img.sourceId}-${img.provider.name}`;
-      });
-    })]);
+    setImagesInGrid((prevImagesInGrid) => [
+      ...prevImagesInGrid.filter((image) => {
+        return images.some((img) => {
+          return (
+            `${image.sourceId}-${image.provider.name}` ==
+            `${img.sourceId}-${img.provider.name}`
+          );
+        });
+      }),
+      ...images.filter((image) => {
+        return !prevImagesInGrid.some((img) => {
+          return (
+            `${image.sourceId}-${image.provider.name}` ==
+            `${img.sourceId}-${img.provider.name}`
+          );
+        });
+      }),
+    ]);
   }
 
   function ClearImages() {
@@ -161,7 +168,7 @@ const Index = forwardRef<
   }, [gridRef, ScrollableParent]);
 
   return (
-    <>
+    <React.Fragment>
       <GridGallery ref={gridRef}>
         {SeparateImagesInGrid({ images: imagesInGrid, cols: 4 }).map(
           (column) => {
@@ -181,7 +188,7 @@ const Index = forwardRef<
           }
         )}
       </GridGallery>
-    </>
+    </React.Fragment>
   );
 });
 

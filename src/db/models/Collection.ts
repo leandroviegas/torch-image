@@ -22,17 +22,17 @@ Collection.init(
       allowNull: false,
       primaryKey: true,
       defaultValue: Sequelize.UUIDV4,
-      validate: {
-        len: {
-          args: [3, 30],
-          msg: "content-must-be-3-15-len",
-        },
-      },
     },
     link: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+      validate: {
+        len: {
+          args: [3, 30],
+          msg: "link/must-be-3-30-len",
+        },
+      },
     },
     name: {
       type: DataTypes.STRING,
@@ -40,7 +40,7 @@ Collection.init(
       validate: {
         len: {
           args: [3, 15],
-          msg: "content-must-be-3-15-len",
+          msg: "name/must-be-3-15-len",
         },
       },
     },

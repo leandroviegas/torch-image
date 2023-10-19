@@ -6,7 +6,7 @@ import { FloatingLabelInput, ThemeStyles } from "./styles";
 type ValueType = string | number | readonly string[] | undefined;
 
 type InputProperties = {
-  status: "error" | "ok";
+  status: "error" | "warning" | "info";
   messages?: string[];
   onChange?:
     | ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
@@ -45,8 +45,7 @@ const Index = ({
   const { theme } = useTheme();
 
   return (
-    <>
-      <FloatingLabelInput theme={ThemeStyles[theme]}>
+      <FloatingLabelInput status={status} theme={ThemeStyles[theme]}>
         {type === "textarea" ? (
           <textarea
             {...{
@@ -73,7 +72,6 @@ const Index = ({
           <span key={message}>* {message}</span>
         ))}
       </FloatingLabelInput>
-    </>
   );
 };
 

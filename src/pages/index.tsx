@@ -17,6 +17,8 @@ import GridGallery from "@/components/Gallery/Grid";
 
 import { FiSearch } from "react-icons/fi";
 import { toast } from "react-toastify";
+import usePromise from "@/hooks/usePromise";
+import { BiLoaderCircle } from "react-icons/bi";
 
 const Header = styled.header`
   height: 600px;
@@ -104,30 +106,42 @@ export default function Home() {
 
   const gridRef = useRef<any>();
 
-  function Search({ query }: { query: string }) {
+  const [promises, execPromise] = usePromise({
+    search: {
+      status: "idle",
+    },
+  });
+  
+  const [initialLoad, setInitialLoad] = useState<boolean>(false);
+
+  async function Search({ query }: { query: string }) {
     if (loadStatus == "loading") return;
 
     setLoadStatus("loading");
 
-    api
-      .get("/images/search", { params: { query, page } })
-      .then((resp) => {
-        if ((resp.data.images || []).length == 0) {
-          setLoadStatus("no-more-results");
-          return;
-        }
-        gridRef.current?.AddImages(resp.data.images);
-        setPage((p) => p + 1);
-        setTimeout(() => {
-          setLoadStatus("success");
-        }, 1000);
-      })
-      .catch((err) => {
-        setLoadStatus("error");
-        toast(`Error to load images: ${err}`, {
-          type: "error",
-        })
+    const result = await execPromise(
+      api.get("/images/search", { params: { query, page } }),
+      "search"
+    );
+
+    if (result.status === "success") {
+      setInitialLoad(true);
+      if ((result.response.data.images || []).length == 0) {
+        setLoadStatus("no-more-results");
+        return;
+      }
+      gridRef.current?.AddImages(result.response?.data?.images || []);
+      setPage((p) => p + 1);
+      setTimeout(() => {
+        setLoadStatus("success");
+      }, 1000);
+    }
+
+    if (result.status === "error") {
+      toast(`Error loading images:\n ${result.error}`, {
+        type: "error",
       });
+    }
   }
 
   useEffect(() => {
@@ -177,12 +191,18 @@ export default function Home() {
         </div>
       </Header>
       <Container>
+      {!initialLoad && (
+        <div className="loading">
+          <BiLoaderCircle />
+        </div>
+      )}
         <GridGallery
           ref={gridRef}
           LoadMore={() =>
             setLoadStatus((ls) =>
               ls == "loading" || ls == "no-more-results" ? ls : "load"
-            )}
+            )
+          }
         />
       </Container>
     </>

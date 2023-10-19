@@ -1,3 +1,4 @@
+import { error } from "console";
 import styled from "styled-components";
 
 export const ThemeStyles = {
@@ -21,16 +22,29 @@ export const ThemeStyles = {
   },
 };
 
-export const FloatingLabelInput = styled.div`
+export const FloatingLabelInput = styled.div<{
+  status: "error" | "warning" | "info";
+}>`
   position: relative;
   padding-top: 13px;
 
   input,
   textarea {
     background-color: transparent;
-    color: ${({ theme }) => theme.color};
-    border: 0;
-    border-bottom: 1.5px solid ${({ theme }) => theme.border.borderColor};
+    ${({ theme, status }) => {
+      switch (status) {
+        case "error":
+          return `
+          color: #bc5757;
+          border-bottom: 1.5px solid #b30000;
+          `;
+        default:
+          return `
+          color: ${theme.color};
+          border-bottom: 1.5px solid ${theme.border.borderColor};
+          `;
+      }
+    }};
     outline: none;
     min-width: 180px;
     width: 100%;
@@ -44,7 +58,18 @@ export const FloatingLabelInput = styled.div`
     border-radius: 0;
 
     &:focus {
-      border-bottom: 1.5px solid ${({ theme }) => theme.border.focus.borderColor};
+      ${({ theme, status }) => {
+        switch (status) {
+          case "error":
+            return `
+          border-bottom: 1.5px solid #b30000;
+          `;
+          default:
+            return `
+          border-bottom: 1.5px solid ${theme.border.focus.borderColor};
+          `;
+        }
+      }};
     }
 
     &::placeholder {
@@ -74,11 +99,34 @@ export const FloatingLabelInput = styled.div`
     resize: vertical;
     border-radius: 5px;
     padding-left: 5px;
-    border: 1.5px solid ${({ theme }) => theme.border.borderColor};
+    ${({ theme, status }) => {
+      switch (status) {
+        case "error":
+          return `
+          border: 1.5px solid #b30000;
+          `;
+        default:
+          return `
+          border: 1.5px solid ${theme.border.borderColor};
+          `;
+      }
+    }};
   }
 
   label {
-    color: #757575;
+    ${({ status }) => {
+      switch (status) {
+        case "error":
+          return `
+          color: #c31a1a;
+          `;
+        default:
+          return `
+          color: #757575;
+          `;
+      }
+    }};
+
     pointer-events: none;
     position: absolute;
     top: 0;
@@ -97,15 +145,26 @@ export const FloatingLabelInput = styled.div`
 
   textarea:focus + label,
   textarea:not(:placeholder-shown) + label {
-      font-size: 11px;
-      margin-top: -5px;
-      margin-left: 0;
-    }
+    font-size: 11px;
+    margin-top: -5px;
+    margin-left: 0;
+  }
 
   span {
     display: block;
     font-size: 12px;
-    color: #595959;
+    ${({ status }) => {
+      switch (status) {
+        case "error":
+          return `
+          color: #d04949;
+          `;
+        default:
+          return `
+          color: #595959;
+          `;
+      }
+    }};
     margin: 5px 0;
   }
 `;

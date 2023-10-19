@@ -10,6 +10,7 @@ import { Collection } from "@/types/Gallery";
 import useUserGalley from "@/hooks/useUserGalley";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import usePromise from "@/hooks/usePromise";
 
 function Index({ image }: { image: { sourceId: string; provider: string } }) {
   const { theme } = useTheme();
@@ -23,21 +24,34 @@ function Index({ image }: { image: { sourceId: string; provider: string } }) {
 
   const [tab, setTab] = useState<"new-form" | "list" | "">("list");
 
-  function LoadUserCollections() {
-    api
-      .get("/collections", { params: { ownerId: session?.user?.id } })
-      .then((resp) => {
-        setUserCollections(
-          resp.data.collections.sort((a: Collection, b: Collection) =>
-            `${a.name}` < `${b.name}` ? -1 : 1
-          )
-        );
-      })
-      .catch((error) => {
-        toast(`Error loading collections: ${error}`, {
-          type: "error",
-        });
+  const [promises, execPromise] = usePromise({
+    "user-collections-load": {
+      status: "idle",
+    },
+    "collection-edit": {
+      status: "idle",
+    },
+  });
+
+  async function LoadUserCollections() {
+    const result = await execPromise(
+      api.get("/collections", { params: { ownerId: session?.user?.id } }),
+      "user-collections-load"
+    );
+
+    if (result.status === "success") {
+      setUserCollections(
+        result.response?.data?.collections?.sort(
+          (a: Collection, b: Collection) => (`${a.name}` < `${b.name}` ? -1 : 1)
+        )
+      );
+    }
+
+    if (result.status === "error") {
+      toast(`Error loading collections:\n ${result.error}`, {
+        type: "error",
       });
+    }
   }
 
   useEffect(() => {
@@ -50,26 +64,31 @@ function Index({ image }: { image: { sourceId: string; provider: string } }) {
     };
   }, []);
 
-  function HandleImageCollection({
+  async function HandleImageCollection({
     action,
     collectionId,
   }: {
     action: "add" | "remove";
     collectionId: string;
   }) {
-    api
-      .put(`/collection/${action}-image`, {
+    const result = await execPromise(
+      api.put(`/collection/${action}-image`, {
         collectionId,
         image_provider: image.provider,
         identification: image.sourceId,
-      })
-      .then((resp) => {
-        LoadUserCollections();
-      }).catch((error) => {
-        toast(`Error editing collection: ${error}`, {
-          type: "error",
-        });
-      });;
+      }),
+      "collection-edit"
+    );
+
+    if (result.status === "success") {
+      LoadUserCollections();
+    }
+
+    if (result.status === "error") {
+      toast(`Error editing collection:\n ${result.error}`, {
+        type: "error",
+      });
+    }
   }
 
   return (

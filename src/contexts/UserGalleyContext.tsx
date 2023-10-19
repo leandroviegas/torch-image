@@ -13,7 +13,9 @@ import Image, { Collection } from "@/types/Gallery";
 import api from "@/services/api";
 import { useSession } from "next-auth/react";
 import CollectionWindow from "@/components/Gallery/Grid/Image/Collection";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import usePromise from "@/hooks/usePromise";
+import useTheme from "@/hooks/useTheme";
 
 type ImageWithLike = Image & { Like: () => void };
 
@@ -48,21 +50,33 @@ export function UserGalleyProvider({
 
   const { data: session } = useSession();
 
+  const { theme } = useTheme();
+
   const [showCollectionWindow, setShowCollectionWindow] =
     useState<boolean>(false);
 
   const [userCollections, setUserCollections] = useState<Collection[]>([]);
 
-  function LoadUserCollections() {
-    api
-      .get("/collections", { params: { ownerId: session?.user?.id } })
-      .then((resp) => {
-        setUserCollections(resp.data.collections);
-      }).catch((error) => {
-        toast(`Error loading collections: ${error}`, {
-          type: "error",
-        });
+  const [promises, execPromise] = usePromise({
+    "user-collections-load": {
+      status: "idle",
+    },
+  });
+
+  async function LoadUserCollections() {
+    const result = await execPromise(
+      api.get("/collections", { params: { ownerId: session?.user?.id } }),
+      "user-collections-load"
+    );
+
+    if (result.status === "success")
+      setUserCollections(result.response?.data?.collections);
+
+    if (result.status === "error") {
+      toast(`Error loading collections:\n ${result.error}`, {
+        type: "error",
       });
+    }
   }
 
   useEffect(() => {
@@ -82,6 +96,18 @@ export function UserGalleyProvider({
         setImageCollectionTab,
       }}
     >
+      <ToastContainer
+        position="top-center"
+        autoClose={false}
+        newestOnTop={false}
+        hideProgressBar
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        theme={theme === "dark" ? "dark" : "light"}
+      />
+
       {showDetails && (
         <OpaqueBackground BackgroundClick={() => setShowDetails(false)}>
           {imageDetails && <ImageDetails ImagePreDetails={imageDetails} />}

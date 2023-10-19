@@ -45,31 +45,56 @@ export const GlobalStyles = createGlobalStyle<{ theme: GlobalStylesProps }>`
     overflow-y: hidden;
   }
   
+  .Toastify__toast-body{
+    white-space: pre-line;
+  }
+
   #main-body{
     height: 100vh;
     overflow-y: auto;
   }
 
+  .loading {
+    grid-column: span 12 / span 12;
+    color: #7b7b7b;
+    padding: 80px 0;
+    display: flex;
+    justify-content: center;
+
+    svg {
+      width: 70px;
+      height: 70px;
+      animation: spin 1.5s cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+    }
+
+    @keyframes spin {
+      100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+  }
+
   .styled-scroll {
     /* width */
     ::-webkit-scrollbar {
-            width: 10px;
-          }
+      width: 10px;
+    }
 
-          /* Track */
-          ::-webkit-scrollbar-track {
-            border-radius: 10px;
-          }
+    /* Track */
+    ::-webkit-scrollbar-track {
+      border-radius: 10px;
+    }
 
           /* Handle */
-          ::-webkit-scrollbar-thumb {
-            background: ${({ theme }) => theme.scrollbar.color};
-            border-radius: 10px;
-          }
+    ::-webkit-scrollbar-thumb {
+      background: ${({ theme }) => theme.scrollbar.color};
+      border-radius: 10px;
+    }
 
           /* Handle on hover */
-          ::-webkit-scrollbar-thumb:hover {
-            background: ${({ theme }) => theme.scrollbar.hover.color};
-          }
+    ::-webkit-scrollbar-thumb:hover {
+      background: ${({ theme }) => theme.scrollbar.hover.color};
+    }
   }
 `;
