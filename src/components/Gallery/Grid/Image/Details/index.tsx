@@ -29,9 +29,15 @@ function Index({ ImagePreDetails }: ImageDetailsProps) {
   const { data: session } = useSession();
   const { theme } = useTheme();
   const { setPopup } = useAuth();
-  const { setShowCollectionWindow, setImageCollectionTab } = useUserGalley();
+  const { setShowCollectionWindow, setImageCollectionTab, userCollections } = useUserGalley();
 
   const [page, setPage] = useState<number>(1);
+
+  const inCollections = userCollections.some((userCollection) => {
+    return userCollection.images.some(
+      (image) => image.identification == `${ImagePreDetails.sourceId}-${ImagePreDetails.provider.name}`
+    );
+  });
 
   const [loadStatus, setLoadStatus] = useState<
     "load" | "loading" | "success" | "error"
@@ -167,6 +173,7 @@ function Index({ ImagePreDetails }: ImageDetailsProps) {
                       setShowCollectionWindow(true);
                     } else setPopup("SignIn");
                   }}
+                  className={inCollections ? "selected" : ""}
                 >
                   <HiCollection />
                 </button>

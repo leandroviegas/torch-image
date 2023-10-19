@@ -33,10 +33,10 @@ function OutClick({
   }, [components, onOutClick, ignoreScrollBars]);
 
   useEffect(() => {
-    document.addEventListener("mousedown", HandleClickOutside, true);
+    document.addEventListener("mousedown", HandleClickOutside, false);
 
     return () => {
-      document.removeEventListener("mousedown", HandleClickOutside, true);
+      document.removeEventListener("mousedown", HandleClickOutside, false);
     };
   }, [HandleClickOutside]);
 

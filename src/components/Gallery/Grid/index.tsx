@@ -17,7 +17,7 @@ import useUserGalley from "@/hooks/useUserGalley";
 const Index = forwardRef<
   { AddImages: (images: Image[]) => void; ClearImages: () => void },
   { LoadMore: () => void; loading?: boolean }
->(({ LoadMore}, ref) => {
+>(({ LoadMore }, ref) => {
   const [imagesInGrid, setImagesInGrid] = useState<Image[]>([]);
 
   const { setImageDetails } = useUserGalley();
@@ -167,10 +167,34 @@ const Index = forwardRef<
     }
   }, [gridRef, ScrollableParent]);
 
+  const [gridCols, setGridCols] = useState<number>(-1);
+
+  useEffect(() => {
+    if (gridCols < 0) {
+      if (window.innerWidth < 1024) {
+        if (gridCols != 2) setGridCols(2);
+      } else {
+        if (gridCols != 4) setGridCols(4);
+      }
+    }
+    
+    window.addEventListener(
+      "resize",
+      (event) => {
+        if (window.innerWidth < 1024) {
+          if (gridCols != 2) setGridCols(2);
+        } else {
+          if (gridCols != 4) setGridCols(4);
+        }
+      },
+      true
+    );
+  }, [gridCols]);
+
   return (
     <React.Fragment>
       <GridGallery ref={gridRef}>
-        {SeparateImagesInGrid({ images: imagesInGrid, cols: 4 }).map(
+        {SeparateImagesInGrid({ images: imagesInGrid, cols: gridCols }).map(
           (column) => {
             return (
               <div key={Math.random()} className="column">

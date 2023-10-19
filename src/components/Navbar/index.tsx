@@ -21,6 +21,7 @@ import AuthPopup from "@/components/Navbar/AuthPopup";
 import { Navbar, ThemeStyles } from "./styles";
 import OutClick from "../OutClick";
 import useUserGalley from "@/hooks/useUserGalley";
+import { BiMenu } from "react-icons/bi";
 
 const Index = ({ isIndex = false }) => {
   const { data: session, status } = useSession();
@@ -33,7 +34,7 @@ const Index = ({ isIndex = false }) => {
 
   const loading = status === "loading";
 
-  
+  const [mobileDropdown, setMobileDropdown] = useState<boolean>();
   const [userDropdown, setUserDropdown] = useState<boolean>();
   const [collectionsDropdown, setCollectionsDropdown] = useState<boolean>();
 
@@ -93,94 +94,99 @@ const Index = ({ isIndex = false }) => {
               </form>
             </div>
           )}
-          <div>
-            <ul className="nav-list">
-              <li>
-                <Link href="/">Explore</Link>
-              </li>
-              {(!loading && session?.user.id) && (
-                <OutClick
-                  onOutClick={() =>
-                    setCollectionsDropdown(false)
-                  }
-                >
-                  <li
-                    onClick={() =>
-                      setCollectionsDropdown(true)
-                    }
-                  >
-                    <span>
-                      Your collections <TiArrowSortedDown />
-                      {collectionsDropdown && (
-                        <div className="dropdown-menu">
-                          {userCollections?.length !== 0 ? (
-                            userCollections.map((collection) => (
-                              <Link
-                                href={`/collection/${collection.link}`}
-                                key={collection.id}
-                              >
-                                <button className="item">
-                                  {collection.name}
-                                </button>
-                              </Link>
-                            ))
-                          ) : (
-                            <button className="empty">No collections</button>
-                          )}
-                        </div>
-                      )}
-                    </span>
-                  </li>
-                </OutClick>
-              )}
-              <li>
-                <HiOutlineLightBulb size={22} onClick={SwitchTheme} />
-              </li>
-              {!loading && !session ? (
-                <>
-                  <li>
-                    <span onClick={() => setPopup("SignIn")}>Sign In</span>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => setPopup("SignUp")}
-                      className="register"
-                    >
-                      Sign Up
-                    </button>
-                  </li>
-                </>
-              ) : (
-                <>
-                  <OutClick
-                    onOutClick={() => {
-                      setUserDropdown(false);
-                    }}
-                  >
-                    <li
-                      onClick={() => setUserDropdown(true)}
-                    >
-                      <img
-                        className="profilePicture"
-                        referrerPolicy="no-referrer"
-                        src={session?.user?.profilePicture || ""}
-                        alt={session?.user?.username || " profile picture"}
-                      />
+          <div
+            className={`nav-list-container ${
+              mobileDropdown ? "show" : "hidden"
+            }`}
+          >
+            <OutClick onOutClick={() => setMobileDropdown(false)}>
+              <button
+                onClick={() => setMobileDropdown(true)}
+                className="list-menu"
+              >
+                <BiMenu />
+              </button>
+              <ul className="nav-list">
+                <li>
+                  <Link href="/">Explore</Link>
+                </li>
+                {!loading && session?.user.id && (
+                  <OutClick onOutClick={() => setCollectionsDropdown(false)}>
+                    <li onClick={() => setCollectionsDropdown(true)}>
                       <span>
-                        {session?.user?.username} <TiArrowSortedDown />
-                        {userDropdown && (
+                        Your collections <TiArrowSortedDown />
+                        {collectionsDropdown && (
                           <div className="dropdown-menu">
-                            <button onClick={() => signOut()} className="item">
-                              Sign Out
-                            </button>
+                            {userCollections?.length !== 0 ? (
+                              userCollections.map((collection) => (
+                                <Link
+                                  href={`/collection/${collection.link}`}
+                                  key={collection.id}
+                                >
+                                  <button className="item">
+                                    {collection.name}
+                                  </button>
+                                </Link>
+                              ))
+                            ) : (
+                              <button className="empty">No collections</button>
+                            )}
                           </div>
                         )}
                       </span>
                     </li>
                   </OutClick>
-                </>
-              )}
-            </ul>
+                )}
+                <li>
+                  <HiOutlineLightBulb size={22} onClick={SwitchTheme} />
+                </li>
+                {!loading && !session ? (
+                  <>
+                    <li>
+                      <span onClick={() => setPopup("SignIn")}>Sign In</span>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => setPopup("SignUp")}
+                        className="register"
+                      >
+                        Sign Up
+                      </button>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <OutClick
+                      onOutClick={() => {
+                        setUserDropdown(false);
+                      }}
+                    >
+                      <li onClick={() => setUserDropdown(true)}>
+                        <img
+                          className="profilePicture"
+                          referrerPolicy="no-referrer"
+                          src={session?.user?.profilePicture || ""}
+                          alt={session?.user?.username || " profile picture"}
+                        />
+                        <span>
+                          {session?.user?.username} <TiArrowSortedDown />
+                          {userDropdown && (
+                            <div className="dropdown-menu">
+                              <button
+                                onClick={() => signOut()}
+                                className="item"
+                              >
+                                Sign Out
+                              </button>
+                            </div>
+                          )}
+                        </span>
+                      </li>
+                    </OutClick>
+                  </>
+                )}
+              </ul>
+            </OutClick>
           </div>
         </Container>
       </Navbar>

@@ -63,6 +63,7 @@ const CollectionHeader = styled.div`
     border-radius: 8px;
     background-color: ${({ theme }) => theme.backgroundColor};
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.12);
+    z-index: -100;
 
     .action-buttons {
       position: absolute;
