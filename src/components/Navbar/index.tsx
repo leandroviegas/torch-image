@@ -19,7 +19,7 @@ import OpaqueBackground from "@/components/OpaqueBackground";
 import Container from "@/components/Container";
 import AuthPopup from "@/components/Navbar/AuthPopup";
 import { Navbar, ThemeStyles } from "./styles";
-import OutClick from "../OutClick";
+import OutClick from "outclick-react";
 import useUserGalley from "@/hooks/useUserGalley";
 import { BiMenu } from "react-icons/bi";
 
